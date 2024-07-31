@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="login">login:</label>
+        <input type="text" id="login" name="login"><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password"><br><br>
+        <input type="submit" value="Login">
+    </form>
+    <button onclick=details()>click me</button>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const login = document.getElementById('login').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ login: login, password: password })
+                })
+                .then(response => response.json())
+                .then(data => {
+                if (data.access_token) {
+                    console.log('Token:', data.access_token);
+                    // Armazene o token localmente (por exemplo, localStorage)
+                    sessionStorage.setItem('access_token', data.access_token);
+
+                } else {
+                    console.error('Login failed:', data);
+                }
+            })
+            .catch(error => {
+            console.error('Error:', error);
+            });
+        });
+        function details(){
+            
+            const token = sessionStorage.getItem('access_token');
+            fetch('/details', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Protected data:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+            
+    </script>
+</body>
+</html>

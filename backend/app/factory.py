@@ -1,0 +1,42 @@
+from flask import Flask, request, g
+from flask_jwt_extended import JWTManager
+from database.conn_database import Database
+
+database = Database()
+
+def create_app():
+    app = Flask(__name__)
+
+    app.config['MYSQL_HOST'] = 'localhost'
+    app.config['MYSQL_PORT'] = '3306'
+    app.config['MYSQL_USER'] = 'myuser'
+    app.config['MYSQL_PASSWORD'] = 'mypassword'
+    app.config['MYSQL_DB'] = 'bd2023'
+    app.config['SECRET_KEY'] = "secret_key"
+    app.config['JWT_SECRET_KEY'] = 'secret_key'
+    jwt = JWTManager(app)
+    
+    @app.before_request
+    def before_request():
+        g.db = Database()
+
+    @app.teardown_request
+    def teardown_request(err):
+        if err:
+            print(f"ERROR: {err}")
+
+        db = getattr(g, 'db', None)
+        if db is not None:
+            db.close()
+
+    from auth.routes import auth_bp
+    # from books.routes import books_bp
+    # from loans.routes import loans_bp
+    # from materials.routes import materials_bp
+
+    app.register_blueprint(auth_bp)
+    # app.register_blueprint(books_bp, url_prefix=f"/{books_bp.name}")
+    # app.register_blueprint(loans_bp, url_prefix=f"/{loans_bp.name}")
+    # app.register_blueprint(materials_bp, url_prefix=f"/{materials_bp.name}")
+
+    return app
