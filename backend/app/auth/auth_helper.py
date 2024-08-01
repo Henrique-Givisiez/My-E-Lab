@@ -3,29 +3,34 @@ from database.base_helper import BaseHelper
 from flask_jwt_extended import create_access_token
 
 class AuthHelper(BaseHelper):
-    def create(self, name: str, last_name: str, login: str, password: str, role: str) -> bool:
+    def create(self, name: str, last_name: str, login: str, password: str, role: str) -> tuple[bool, str]:
+        msg = ""
+        if name and last_name and login and password and role:
+            hashed_password = sha256(password.encode()).hexdigest()
 
-        hashed_password = sha256(password.encode()).hexdigest()
+            insert_user_query = "INSERT INTO usuario (Login, Senha, Nome, Sobrenome) VALUES (%s, %s, %s, %s)"
 
-        insert_user_query = "INSERT INTO usuario (Login, Senha, Nome, Sobrenome) VALUES (%s, %s, %s, %s)"
+            try:
+                self.cursor.execute(insert_user_query, ( login, hashed_password, name, last_name))
+                user_id = self.cursor.lastrowid
 
-        try:
-            self.cursor.execute(insert_user_query, ( login, hashed_password, name, last_name))
-            user_id = self.cursor.lastrowid
+                select_role_id_query = "SELECT ID_da_Funcao FROM funcao WHERE Funcao = %s"
+                self.cursor.execute(select_role_id_query, (role,))
+                role_id = self.cursor.fetchone()[0]
+                insert_user_role_query = "INSERT INTO usuario_funcao (FK_ID_da_Funcao, FK_ID_do_Usuario) VALUES (%s, %s)"
+                self.cursor.execute(insert_user_role_query, (role_id, user_id))
+                self.conn.commit()
+                msg = "Conta criada com sucesso!"
+                return True, msg
 
-            select_role_id_query = "SELECT ID_da_Funcao FROM funcao WHERE Funcao = %s"
-            self.cursor.execute(select_role_id_query, (role,))
-            role_id = self.cursor.fetchone()[0]
-            insert_user_role_query = "INSERT INTO usuario_funcao (FK_ID_da_Funcao, FK_ID_do_Usuario) VALUES (%s, %s)"
-            self.cursor.execute(insert_user_role_query, (role_id, user_id))
-            self.conn.commit()
+            except Exception as err:
+                self.conn.rollback()
+                print(f"ERROR: {err}")
+                return False, err
 
-            return True
-
-        except Exception as err:
-            self.conn.rollback()
-            print(f"ERROR: {err}")
-            return False
+        else:
+            msg = "Campos incompletos."
+            return False, msg
         
     def read(self, user_id: int):
         select_user_query = "SELECT * FROM Usuario WHERE ID_do_Usuario = %s"
@@ -86,34 +91,42 @@ class AuthHelper(BaseHelper):
             print(f"ERROR: {err}")
             return False
         
-    def check_login(self, login: str, password: str):
-        hashed_password = sha256(password.encode()).hexdigest()
-        select_user_query = "SELECT * FROM Usuario WHERE Login = %s AND Senha = %s"
-        try:
-            self.cursor.execute(select_user_query, (login, hashed_password))
-            user = self.cursor.fetchone()
-            if user:
-                user_id = user[4]
-                select_user_role_query = "SELECT Funcao FROM funcao JOIN usuario_funcao ON ID_da_Funcao = FK_ID_da_Funcao WHERE FK_ID_do_Usuario = %s"
-                try:
-                    self.cursor.execute(select_user_role_query, (user_id,))
-                    role = self.cursor.fetchone()[0]
+    def check_login(self, login: str, password: str) -> tuple[str, str] | tuple[bool, str]:
+        msg = ""
+        if login and password:
+            hashed_password = sha256(password.encode()).hexdigest()
+            select_user_query = "SELECT * FROM Usuario WHERE Login = %s AND Senha = %s"
+            try:
+                self.cursor.execute(select_user_query, (login, hashed_password))
+                user = self.cursor.fetchone()
+                if user:
+                    user_id = user[4]
+                    select_user_role_query = "SELECT Funcao FROM funcao JOIN usuario_funcao ON ID_da_Funcao = FK_ID_da_Funcao WHERE FK_ID_do_Usuario = %s"
+                    try:
+                        self.cursor.execute(select_user_role_query, (user_id,))
+                        role = self.cursor.fetchone()[0]
 
-                    add_claims = {
-                        "role" : role,
-                        "name" : user[3]
-                    }
+                        add_claims = {
+                            "role" : role,
+                            "name" : user[3]
+                        }
 
-                    access_token = create_access_token(identity = user_id, additional_claims = add_claims)
-                    return access_token
+                        access_token = create_access_token(identity = user_id, additional_claims = add_claims)
+                        msg = "Login bem sucedido!"
+                        return access_token, msg
 
-                except Exception as err:
-                    print(f"ERROR: {err}")
-                    return False
-                
-            else:
-                return False
+                    except Exception as err:
+                        print(f"ERROR: {err}")
+                        return False, err
+                    
+                else:
+                    msg = "Credenciais inválidas."
+                    return False, msg
             
-        except Exception as err:
-            print(f"ERROR: {err}")
-            return False
+            except Exception as err:
+                print(f"ERROR: {err}")
+                return False, err
+
+        else:
+            msg = "Campos incompletos."
+            return False, msg
