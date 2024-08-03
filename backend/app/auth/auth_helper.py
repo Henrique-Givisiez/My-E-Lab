@@ -32,15 +32,31 @@ class AuthHelper(BaseHelper):
             msg = "Campos incompletos."
             return False, msg
         
-    def read(self, user_id: int):
-        select_user_query = "SELECT * FROM Usuario WHERE ID_do_Usuario = %s"
-        try:
-            self.cursor.execute(select_user_query, (user_id,))
-            user_data = self.cursor.fetchone()
-            return user_data
+    def read(self, user_id: int = None, login: str = None) -> list | None:
+        if user_id:
+            select_user_query = "SELECT * FROM Usuario WHERE ID_do_Usuario = %s"
+            try:
+                self.cursor.execute(select_user_query, (user_id,))
+                user_data = list(self.cursor.fetchone())
+                return user_data 
+            
+            except Exception as err:
+                print(f"ERROR: {err}")
+                return None
         
-        except Exception as err:
-            print(f"ERROR: {err}")
+        elif login:
+            select_user_query = "SELECT * FROM Usuario WHERE Login = %s"
+            try:
+                self.cursor.execute(select_user_query, (login, ))
+                user_data = list(self.cursor.fetchone())
+                return user_data 
+            
+            except Exception as err:
+                print(f"ERROR: {err}")
+                return None
+            
+        else:
+            print("Informações não fornecidas.")
             return None
         
     def update(self, user_id: int, new_name: str, new_last_name: str, new_password: str) -> bool:
@@ -77,19 +93,31 @@ class AuthHelper(BaseHelper):
             print(f"ERROR: {err}")
             return False
         
-    def delete(self, user_id: int) -> bool:
+    def delete(self, user_id: int) -> tuple[bool, str]:
+        msg = ""
         delete_user_query = "DELETE FROM Usuario WHERE ID_do_Usuario = %s"
         delete_user_role_query = "DELETE FROM usuario_funcao WHERE FK_ID_do_Usuario = %s"
-        try:
-            self.cursor.execute(delete_user_query, (user_id, ))
-            self.cursor.execute(delete_user_role_query, (user_id, ))
-            self.conn.commit()
-            return True
+        if user_id:
+            try:
+                user_exists = self.read(user_id=user_id)
+                if user_exists:
+                    self.cursor.execute(delete_user_query, (user_id, ))
+                    self.cursor.execute(delete_user_role_query, (user_id, ))
+                    self.conn.commit()
+                    msg = "Usuário excluído."
+                    return True, msg
+                
+                msg = "Usuário inexistente."
+                return False, msg
         
-        except Exception as err:
-            self.conn.rollback()
-            print(f"ERROR: {err}")
-            return False
+            except Exception as err:
+                self.conn.rollback()
+                print(f"ERROR: {err}")
+                return False, err
+
+        else:
+            msg = "Usuário inexistente."
+            return False, msg
         
     def check_login(self, login: str, password: str) -> tuple[str, str] | tuple[bool, str]:
         msg = ""

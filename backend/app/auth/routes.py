@@ -29,14 +29,19 @@ def login():
     return jsonify({"access_token": jwt_token, "msg": msg}), (200 if jwt_token else 401)
 
 
-@auth_bp.route('/details', methods=['GET'])
+@auth_bp.route('/details/<user_info>', methods=['GET'])
 @jwt_required()
-def user_details():
+def user_details(user_info):
     user_id = get_jwt_identity()
     if not user_id:
-        return jsonify(msg="Operação não autorizada. Usuário inexistente."), 401
-    user = database.auth.read(user_id)
-    return jsonify(user) if user else ('', 404)
+        return jsonify(msg="Operação não autorizada."), 401
+    try:
+        id_to_read = int(user_info)
+        user_data = database.auth.read(user_id=id_to_read)
+    except ValueError:
+        user_data = database.auth.read(login=user_info)
+    finally:
+        return jsonify(user_data) if user_data else ('', 404)
 
 
 @auth_bp.route('/update', methods=['PUT'])
@@ -46,7 +51,7 @@ def update_user():
     claims = get_jwt()
     role = claims["role"]
     if not user_id:
-        return jsonify(msg="Operação não autorizada. Usuário inexistente."), 401
+        return jsonify(msg="Operação não autorizada."), 401
     if role == "admin":
         data = request.json
         success = database.auth.update(user_id, data.get('new_name'), data.get('new_last_name'), data.get('new_password'))
@@ -54,15 +59,15 @@ def update_user():
     return jsonify(msg="Usuário não tem permissão para realizar essa operação"), 403
 
 
-@auth_bp.route('/delete', methods=['DELETE'])
+@auth_bp.route('/delete/<id_to_delete>', methods=['DELETE'])
 @jwt_required()
-def delete_user():
+def delete_user(id_to_delete):
     user_id = get_jwt_identity()
     claims = get_jwt()
     role = claims["role"]
     if not user_id:
-        return jsonify(msg="Operação não autorizada. Usuário inexistente."), 401
+        return jsonify(msg="Operação não autorizada."), 401
     if role == "admin":
-        success = database.auth.delete(user_id)
-        return jsonify({'success': success}), (200 if success else 400)
-    return jsonify(msg="Usuário não tem permissão para realizar essa operação"), 403
+        success, msg = database.auth.delete(id_to_delete)
+        return jsonify({"success": success, "msg": msg}), (200 if success else 400)
+    return jsonify({"success": False, "msg":"Usuário não tem permissão para realizar essa operação."}), 403

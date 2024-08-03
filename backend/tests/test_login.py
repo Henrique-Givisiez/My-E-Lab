@@ -1,7 +1,6 @@
 import unittest
 import sys
 import os
-import jwt
 
 # Adiciona o diretório 'app' ao sys.path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'app'))
