@@ -59,10 +59,10 @@ class AuthHelper(BaseHelper):
             print("Informações não fornecidas.")
             return None
         
-    def update(self, user_id: int, new_name: str, new_last_name: str, new_password: str) -> bool:
+    def update(self, user_id: int, new_name: str, new_last_name: str, new_password: str) -> tuple[bool, str]:
         fields_to_update = []
         args = []
-
+        msg = ""
         if new_name:
             fields_to_update.append("Nome = %s")
             args.append(new_name)
@@ -77,8 +77,8 @@ class AuthHelper(BaseHelper):
             args.append(hashed_password)
 
         if not len(fields_to_update):
-            print("Informações não fornecidas")
-            return False
+            msg = "Informações não fornecidas."
+            return False, msg
         
         update_user_query = "UPDATE Usuario SET " + ", ".join(fields_to_update) + "WHERE ID_do_Usuario = %s"
         args.append(user_id)
@@ -86,12 +86,13 @@ class AuthHelper(BaseHelper):
         try:
             self.cursor.execute(update_user_query, (args))
             self.conn.commit()
-            return True
+            msg = "Usuário atualizado com sucesso."
+            return True, msg
         
         except Exception as err:
             self.conn.rollback()
             print(f"ERROR: {err}")
-            return False
+            return False, err
         
     def delete(self, user_id: int) -> tuple[bool, str]:
         msg = ""

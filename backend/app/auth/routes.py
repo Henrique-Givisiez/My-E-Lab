@@ -44,18 +44,20 @@ def user_details(user_info):
         return jsonify(user_data) if user_data else ('', 404)
 
 
-@auth_bp.route('/update', methods=['PUT'])
+@auth_bp.route('/update/<id_to_update>', methods=['PUT'])
 @jwt_required()
-def update_user():
+def update_user(id_to_update):
     user_id = get_jwt_identity()
     claims = get_jwt()
     role = claims["role"]
     if not user_id:
         return jsonify(msg="Operação não autorizada."), 401
+        
     if role == "admin":
         data = request.json
-        success = database.auth.update(user_id, data.get('new_name'), data.get('new_last_name'), data.get('new_password'))
-        return jsonify({'success': success}), (200 if success else 400)
+        success, msg = database.auth.update(id_to_update, data.get('new_name'), data.get('new_last_name'), data.get('new_password'))
+        return jsonify({'success': success, "msg": msg}), (200 if success else 400)
+
     return jsonify(msg="Usuário não tem permissão para realizar essa operação"), 403
 
 
