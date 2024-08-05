@@ -1,6 +1,6 @@
 import pymysql
 
-from auth.auth_helper import AuthHelper
+from backend.app.auth.helper import AuthHelper
 # from database.books import BooksHelper
 # from database.loans import LoansHelper
 # from database.materials import MaterialsHelper
