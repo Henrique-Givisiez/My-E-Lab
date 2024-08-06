@@ -10,7 +10,7 @@ auth_bp = Blueprint('auth', __name__)
 def signup():
     data = request.json
     try:
-        success, msg = database.auth.create(data['name'], data['last_name'], data['login'], data['password'], data['role'])
+        success, msg = database.auth.create(data['name'], data['last_name'], data['login'], data['password'], data['role'], data['profile_img'], data['gender'])
     except KeyError:
         success = False
         msg = "Campos faltando."
@@ -55,7 +55,7 @@ def update_user(id_to_update):
         
     if role == "admin":
         data = request.json
-        success, msg = database.auth.update(id_to_update, data.get('new_name'), data.get('new_last_name'), data.get('new_password'))
+        success, msg = database.auth.update(id_to_update, data.get('new_name'), data.get('new_last_name'), data.get('new_password'), data.get('new_profile_img'), data.get('new_gender'))
         return jsonify({'success': success, "msg": msg}), (200 if success else 400)
 
     return jsonify(msg="Usuário não tem permissão para realizar essa operação"), 403
