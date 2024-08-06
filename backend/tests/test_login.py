@@ -26,7 +26,7 @@ class TestSignup(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         token, msg = response.json['access_token'], response.json['msg']
 
-        self.assertEqual(msg, "Login bem sucedido!")
+        self.assertEqual(msg, "Bem-vindo(a), Fulano!")
         self.assertIsInstance(token, str)
 
     def test_login_invalid_wrong_credentials(self):
@@ -37,7 +37,7 @@ class TestSignup(unittest.TestCase):
     def test_login_invalid_no_fields(self):
         response = self.app.post("/login", json = {})
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(response.json, {"access_token": False, "msg": "Campos faltando."})
+        self.assertEqual(response.json, {"access_token": False, "msg": "Campos incompletos."})
 
     def test_login_invalid_no_values(self):
         response = self.app.post("/login", json = {"login": None, "password": "senha"})

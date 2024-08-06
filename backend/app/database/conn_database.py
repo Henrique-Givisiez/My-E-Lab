@@ -1,6 +1,6 @@
 import pymysql
 
-from backend.app.auth.helper import AuthHelper
+from auth.helper import AuthHelper
 # from database.books import BooksHelper
 # from database.loans import LoansHelper
 # from database.materials import MaterialsHelper
@@ -9,7 +9,7 @@ from backend.app.auth.helper import AuthHelper
 def get_db_connection():
     connection = pymysql.connect(
         host='localhost',
-        database='bd2023',
+        database='my_e_lab_database',
         user='root',
         password='mypassword'
     )

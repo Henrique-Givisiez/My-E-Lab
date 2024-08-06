@@ -38,7 +38,7 @@ class TestSignup(unittest.TestCase):
             "Authorization": f'Bearer {token}'
         }
         
-        id_to_read = database.auth.read(login="fulano123")[-1]
+        id_to_read = database.auth.read(login="fulano123")[0]
 
         read_response = self.app.get(f"/details/{id_to_read}", headers=headers)
         self.assertIsInstance(read_response.json, list)
