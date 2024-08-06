@@ -36,7 +36,8 @@ class BooksHelper(BaseHelper):
         except Exception as err:
             print(f"ERROR: {err}")
             return None
-        
+
+
     def read_all_books(self) -> list | None:
         select_all_books_query = "SELECT * FROM Livro"
         try:
@@ -89,15 +90,11 @@ class BooksHelper(BaseHelper):
             return None
         
         
-    def update(self, new_ISBN: str = None, new_title: str = None, new_description: str = None, new_category: str = None,
+    def update(self, ISBN: str, new_title: str = None, new_description: str = None, new_category: str = None,
                new_date: str = None, new_author: str = None, new_location: str = None, new_URI: str = None) -> tuple[bool, str]:
         
         update_book_query = "UDPATE Livro SET "
         args = []
-
-        if new_ISBN:
-            update_book_query += "ISBN = %s, "
-            args.append(new_ISBN)
 
         if new_title:
             update_book_query += "Titulo = %s, "
@@ -128,7 +125,9 @@ class BooksHelper(BaseHelper):
             args.append(new_URI)
 
         update_book_query = update_book_query[:-2]
-
+        update_book_query += "WHERE ISBN = %s"
+        args.append(ISBN)
+        
         try:
             self.cursor.execute(update_book_query, (tuple(args), ))
             self.conn.commit()
@@ -172,6 +171,7 @@ class BooksHelper(BaseHelper):
             msg = "Livro não encontrado. Verifique o ISBN"        
             return False, msg
         
+
     def book_is_loaned(self, ISBN) -> bool:
         select_loan_query = "SELECT * FROM Emprestimo WHERE FK_id_item = %s AND Status_atual = emprestado"
         try:

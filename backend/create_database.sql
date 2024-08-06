@@ -14,12 +14,12 @@ CREATE TABLE Usuario (
 );
 
 CREATE TABLE Item (
-    Id VARCHAR(255) NOT NULL PRIMARY KEY,
+    Id VARCHAR(13) NOT NULL PRIMARY KEY,
     Tipo_item VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Livro (
-    ISBN  VARCHAR(255) PRIMARY KEY NOT NULL,
+    ISBN  CHAR(13) PRIMARY KEY NOT NULL,
     Titulo VARCHAR(255) NOT NULL,
     Descricao TEXT,
     Categoria VARCHAR(255) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE Livro (
 );
 
 CREATE TABLE Material_Didatico (
-    Numero_serie VARCHAR(255) PRIMARY KEY NOT NULL,
+    Numero_serie CHAR(10) PRIMARY KEY NOT NULL,
     Nome VARCHAR(255) NOT NULL,
     Descricao VARCHAR(255),
     Categoria VARCHAR(255) NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE Material_Didatico (
 );
 
 CREATE TABLE Emprestimo (
-    FK_id_item VARCHAR(255) NOT NULL,
+    FK_id_item VARCHAR(13) NOT NULL,
     Id_emprestimo INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     Data_Emprestimo DATE NOT NULL,
     Data_Devolucao DATE NOT NULL,

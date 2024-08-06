@@ -31,6 +31,7 @@ def login():
 
 @auth_bp.route('/details/<user_info>', methods=['GET'])
 @jwt_required()
+@cross_origin()
 def user_details(user_info):
     user_id = get_jwt_identity()
     if not user_id:
@@ -46,6 +47,7 @@ def user_details(user_info):
 
 @auth_bp.route('/update/<id_to_update>', methods=['PUT'])
 @jwt_required()
+@cross_origin()
 def update_user(id_to_update):
     user_id = get_jwt_identity()
     claims = get_jwt()
@@ -63,6 +65,7 @@ def update_user(id_to_update):
 
 @auth_bp.route('/delete/<id_to_delete>', methods=['DELETE'])
 @jwt_required()
+@cross_origin()
 def delete_user(id_to_delete):
     user_id = get_jwt_identity()
     claims = get_jwt()
