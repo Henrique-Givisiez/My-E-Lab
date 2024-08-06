@@ -22,17 +22,17 @@ class TestSignup(unittest.TestCase):
         self.app_context.pop()
                          
     def test_signup_valid(self):
-        response = self.app.post("/signup", json={"name": "Fulano", "last_name":  "Silva", "login": "fulano123", "password": "senha", "role": "admin"})
+        response = self.app.post("/signup", json={"name": "Fulano", "last_name":  "Silva", "login": "fulano123", "password": "senha", "role": "admin", "gender": "m", "profile_img": ""})
         self.assertEqual(response.status_code, 201)
         self.assertTrue(response.json['success'])
 
     def test_signup_invalid_no_fields(self):
         response = self.app.post("/signup", json = {})
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json, {"success": False, "msg": "Campos faltando."})
+        self.assertEqual(response.json, {"success": False, "msg": "Campos incompletos."})
 
     def test_signup_invalid_no_values(self):
-        response = self.app.post("/signup", json = {"name": "Fulano", "last_name": None, "login": "fulano123", "password": "senha", "role": "admin"})
+        response = self.app.post("/signup", json = {"name": "Fulano", "last_name": None, "login": "fulano123", "password": "senha", "role": "admin", "gender": "m"})
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json, {"success": False, "msg": "Campos incompletos."})
 

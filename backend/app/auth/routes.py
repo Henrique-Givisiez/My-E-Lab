@@ -10,10 +10,10 @@ auth_bp = Blueprint('auth', __name__)
 def signup():
     data = request.json
     try:
-        success, msg = database.auth.create(data['name'], data['last_name'], data['login'], data['password'], data['role'], data['profile_img'], data['gender'])
+        success, msg = database.auth.create(data['name'], data['last_name'], data['login'], data['password'], data['role'], data['gender'], data.get('profile_img'))
     except KeyError:
         success = False
-        msg = "Campos faltando."
+        msg = "Campos incompletos."
     return jsonify({"success":success, "msg":msg}), (201 if success else 400)
 
 
@@ -25,7 +25,7 @@ def login():
         jwt_token, msg = database.auth.check_login(data['login'], data['password'])
     except KeyError:
         jwt_token = False
-        msg = "Campos faltando."
+        msg = "Campos incompletos."
     return jsonify({"access_token": jwt_token, "msg": msg}), (200 if jwt_token else 401)
 
 

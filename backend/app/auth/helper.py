@@ -31,6 +31,7 @@ class AuthHelper(BaseHelper):
             try:
                 self.cursor.execute(select_user_query, (user_id,))
                 user_data = list(self.cursor.fetchone())
+                user_data[-1] = user_data[-1].decode('utf-8')
                 return user_data 
             
             except Exception as err:
@@ -42,6 +43,7 @@ class AuthHelper(BaseHelper):
             try:
                 self.cursor.execute(select_user_query, (login, ))
                 user_data = list(self.cursor.fetchone())
+                user_data[-1] = user_data[-1].decode('utf-8')
                 return user_data 
             
             except Exception as err:
@@ -135,14 +137,15 @@ class AuthHelper(BaseHelper):
                 if user:
                     user_id = user[0]
                     try:
-                        role = user[6]
+                        role = user[5]
+                        name = user[3]
                         add_claims = {
                             "role" : role,
                             "login" : login,
                         }
 
                         access_token = create_access_token(identity = user_id, additional_claims = add_claims)
-                        msg = f"Bem"
+                        msg = f"Bem-vindo(a), {name}!"
                         return access_token, msg
 
                     except Exception as err:
@@ -173,5 +176,5 @@ class AuthHelper(BaseHelper):
         
         except Exception as err:
             print(f"ERROR: {err}")
-            return False
+            return True
 
