@@ -3,7 +3,7 @@ import sys
 import os
 from time import sleep
 # Adiciona o diretório 'app' ao sys.path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'app'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..','..', 'app'))
 
 # Agora você pode importar o 'factory'
 from app.factory import create_app, database
@@ -23,7 +23,7 @@ class TestSignup(unittest.TestCase):
         self.app_context.pop()
                    
     def test_delete_authorized_user_valid(self):
-        login_response = self.app.post("/login", json = {
+        login_response = self.app.post("/auth/login", json = {
             "login": "fulano123", 
             "password": "senha"
         })
@@ -39,17 +39,17 @@ class TestSignup(unittest.TestCase):
         
         id_to_delete = database.auth.read(login="fulano123")[0]
 
-        delete_response = self.app.delete(f"/delete/{id_to_delete}", headers=headers)
+        delete_response = self.app.delete(f"/auth/delete/{id_to_delete}", headers=headers)
         self.assertEqual(delete_response.status_code, 200)
         self.assertEqual(delete_response.json, {"success": True, "msg": "Usuário excluído."})
 
     def test_delete_unauthorized_user_invalid(self):
-        response = self.app.post("/signup", json={"name": "Ciclano", "last_name":  "Santos", "login": "ciclano123", "password": "senha", "role": "estudante", "gender": "m", "profile_img": ""})
+        response = self.app.post("/auth/signup", json={"name": "Ciclano", "last_name":  "Santos", "login": "ciclano123", "password": "senha", "role": "estudante", "gender": "m", "profile_img": ""})
         self.assertEqual(response.status_code, 201)
         self.assertTrue(response.json['success'])
         sleep(2)
         
-        login_response = self.app.post("/login", json = {
+        login_response = self.app.post("/auth/login", json = {
             "login": "ciclano123", 
             "password": "senha"
         })
@@ -63,7 +63,7 @@ class TestSignup(unittest.TestCase):
             "Authorization": f'Bearer {token}'
         }
 
-        delete_response = self.app.delete(f"/delete/{id_to_delete}", headers=headers)
+        delete_response = self.app.delete(f"/auth/delete/{id_to_delete}", headers=headers)
         self.assertEqual(delete_response.status_code, 403)
         self.assertEqual(delete_response.json, {"success": False, "msg": "Usuário não tem permissão para realizar essa operação."})
 

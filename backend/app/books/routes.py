@@ -18,8 +18,8 @@ def create_book():
     if role == "admin" or role == "professor":
         try:
             data = request.json
-            success, msg = database.books.create(data['ISBN'], data['title'], data['description'], data['category'], data['date'], data['author'],
-                                                data['location'], data.get('book_cover'))
+            success, msg = database.books.create(data['ISBN'], data['title'], data['description'], data['category'], 
+                                                 data['date'], data['author'], data['location'], data.get('book_cover'))
         except KeyError:
             success = False
             msg = "Campos incompletos."
@@ -27,7 +27,7 @@ def create_book():
 
     return jsonify({"success": False, "msg": "Usuário não tem permissão para realizar essa operação"}), 403
 
-@books_bp.route('/read-by-isbn/<isbn>', methods=['GET'])
+@books_bp.route('/read-by-isbn/<ISBN>', methods=['GET'])
 @cross_origin()
 @jwt_required()
 def read_book_by_isbn(ISBN):
@@ -35,11 +35,8 @@ def read_book_by_isbn(ISBN):
     if not user_id:
         return jsonify(msg="Operação não autorizada."), 401
 
-    if not ISBN:
-        msg = "ISBN não encontrado."
-
     book_data = database.books.read(ISBN) 
-    return jsonify(book_data) if book_data else (msg, 404)
+    return jsonify(book_data) if book_data else ({"msg": "ISBN não encontrado."}, 404)
 
 @books_bp.route('/read-all', methods=['GET'])
 @cross_origin()
@@ -67,7 +64,7 @@ def read_books_by_parameter():
     return jsonify(books_list) if books_list else ('', 404)
 
 
-@books_bp.route('/update/<isbn>', methods=['PUT'])
+@books_bp.route('/update/<ISBN>', methods=['PUT'])
 @jwt_required()
 @cross_origin()
 def update_book(ISBN):
@@ -77,9 +74,6 @@ def update_book(ISBN):
     if not user_id:
         return jsonify({"success": False, "msg":"Operação não autorizada."}), 401
 
-    if not ISBN:
-        return jsonify({"success": False, "msg":"ISBN não encontrado."}), 400
-    
     if role == "admin" or role == "professor":
         data = request.json
         success, msg = database.books.update(ISBN, data.get('new_title'), data.get('new_description'), data.get('new_category'),
@@ -89,7 +83,7 @@ def update_book(ISBN):
     return jsonify({"success": False, "msg": "Usuário não tem permissão para realizar essa operação"}), 403
 
 
-@books_bp.route('/delete/<isbn>', methods=['DELETE'])
+@books_bp.route('/delete/<ISBN>', methods=['DELETE'])
 @jwt_required()
 @cross_origin()
 def delete_book(ISBN):

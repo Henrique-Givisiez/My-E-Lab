@@ -3,7 +3,7 @@ import sys
 import os
 
 # Adiciona o diretório 'app' ao sys.path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'app'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..','..', 'app'))
 
 # Agora você pode importar o 'factory'
 from app.factory import create_app
@@ -22,7 +22,7 @@ class TestSignup(unittest.TestCase):
         self.app_context.pop()
                         
     def test_login_valid(self):
-        response = self.app.post("/login", json = {"login": "fulano123", "password": "senha"})
+        response = self.app.post("/auth/login", json = {"login": "fulano123", "password": "senha"})
         self.assertEqual(response.status_code, 200)
         token, msg = response.json['access_token'], response.json['msg']
 
@@ -30,17 +30,17 @@ class TestSignup(unittest.TestCase):
         self.assertIsInstance(token, str)
 
     def test_login_invalid_wrong_credentials(self):
-        response = self.app.post("/login", json = {"login": "fulano123", "password": "superSenha"})
+        response = self.app.post("/auth/login", json = {"login": "fulano123", "password": "superSenha"})
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.json, {"access_token": False, "msg": "Credenciais inválidas."})
 
     def test_login_invalid_no_fields(self):
-        response = self.app.post("/login", json = {})
+        response = self.app.post("/auth/login", json = {})
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.json, {"access_token": False, "msg": "Campos incompletos."})
 
     def test_login_invalid_no_values(self):
-        response = self.app.post("/login", json = {"login": None, "password": "senha"})
+        response = self.app.post("/auth/login", json = {"login": None, "password": "senha"})
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.json, {"access_token": False, "msg": "Campos incompletos."})
 

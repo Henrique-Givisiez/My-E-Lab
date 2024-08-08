@@ -1,4 +1,4 @@
-from flask import Flask, request, g
+from flask import Flask, g
 from flask_jwt_extended import JWTManager
 from database.conn_database import Database
 

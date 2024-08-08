@@ -3,7 +3,7 @@ import sys
 import os
 
 # Adiciona o diretório 'app' ao sys.path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'app'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..','..', 'app'))
 
 # Agora você pode importar o 'factory'
 from app.factory import create_app
@@ -22,7 +22,7 @@ class TestSignup(unittest.TestCase):
         self.app_context.pop()
 
     def test_update_valid(self):
-        login_response = self.app.post("/login", json = {
+        login_response = self.app.post("/auth/login", json = {
             "login": "fulano123", 
             "password": "senha"
         })
@@ -37,7 +37,7 @@ class TestSignup(unittest.TestCase):
         }
         id_to_update = 20
 
-        update_response = self.app.put(f'/update/{id_to_update}', headers=headers, json = {
+        update_response = self.app.put(f'/auth/update/{id_to_update}', headers=headers, json = {
             "new_name": "Fulano supremo"
         })
 
@@ -45,7 +45,7 @@ class TestSignup(unittest.TestCase):
         self.assertEqual(update_response.json, {"success": True, "msg": "Usuário atualizado com sucesso."})
 
     def test_update_invalid(self):
-        login_response = self.app.post("/login", json = {
+        login_response = self.app.post("/auth/login", json = {
             "login": "fulano123", 
             "password": "senha"
         })
@@ -61,7 +61,7 @@ class TestSignup(unittest.TestCase):
 
         id_to_update = 20
 
-        update_response = self.app.put(f'/update/{id_to_update}', headers=headers, json = {
+        update_response = self.app.put(f'/auth/update/{id_to_update}', headers=headers, json = {
             "new_name": "",
             "new_password": "",
             "new_last_name": ""
