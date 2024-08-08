@@ -183,7 +183,7 @@ class BooksHelper(BaseHelper):
             return False, msg
         
 
-    def book_is_loaned(self, ISBN) -> bool:
+    def book_is_loaned(self, ISBN: str) -> bool:
         select_loan_query = "SELECT * FROM Emprestimo WHERE Status_atual = %s AND FK_id_item = %s"
         try:
             self.cursor.execute(select_loan_query, ("emprestado", ISBN,))
