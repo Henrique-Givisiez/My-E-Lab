@@ -36,7 +36,6 @@ CREATE TABLE Material_Didatico (
     Descricao VARCHAR(255),
     Categoria VARCHAR(255) NOT NULL,
     Data_aquisicao DATE NOT NULL,
-    Autor VARCHAR(255) NOT NULL,
     Localizacao VARCHAR(255) NOT NULL,
     URI BLOB,
     FOREIGN KEY (Numero_serie) REFERENCES Item (Id)
