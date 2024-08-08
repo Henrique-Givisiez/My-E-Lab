@@ -3,7 +3,7 @@ import pymysql
 from auth.helper import AuthHelper
 from books.helper import BooksHelper
 # from database.loans import LoansHelper
-# from database.materials import MaterialsHelper
+from materials.helper import MaterialsHelper
 
 
 def get_db_connection():
@@ -23,7 +23,7 @@ class Database:
         self.auth = AuthHelper(self.connection, self.cursor)
         self.books = BooksHelper(self.connection, self.cursor)
         # self.loans = LoansHelper(self.connection, self.cursor)
-        # self.materials = MaterialsHelper(self.connection, self.cursor)
+        self.materials = MaterialsHelper(self.connection, self.cursor)
 
     def close(self):
         self.connection.close()
