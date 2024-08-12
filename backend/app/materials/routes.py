@@ -30,13 +30,13 @@ def create_material():
 @materials_bp.route('/read-by-serial-number/<serial_number>', methods=['GET'])
 @cross_origin()
 @jwt_required()
-def read_material_by_isbn(serial_number):
+def read_material_by_serial_number(serial_number):
     user_id = get_jwt_identity()
     if not user_id:
         return jsonify(msg="Operação não autorizada."), 401
 
     material_data = database.materials.read(serial_number) 
-    return jsonify(material_data) if material_data else ({"msg": "Número de seérie não encontrado."}, 404)
+    return jsonify(material_data) if material_data else ({"msg": "Número de série não encontrado."}, 404)
 
 @materials_bp.route('/read-all', methods=['GET'])
 @cross_origin()

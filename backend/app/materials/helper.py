@@ -143,7 +143,7 @@ class MaterialsHelper(BaseHelper):
                 return False, err
         
         else:
-            msg = "Numero de série não encontrado."
+            msg = "Número de série não encontrado."
             return False, msg
     
     def delete(self, serial_number: str) -> tuple[bool, str]:
