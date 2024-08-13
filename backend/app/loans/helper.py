@@ -1,6 +1,6 @@
 from database.base_helper import BaseHelper
 from datetime import timedelta, date, datetime
-class BooksHelper(BaseHelper):
+class LoansHelper(BaseHelper):
     
     def create(self, item_id: str, user_id: int) -> tuple[bool, str]:
         if item_id and user_id:
@@ -120,4 +120,25 @@ class BooksHelper(BaseHelper):
         except Exception as err:
             print(f"ERROR: {err}")
             return False, err
+        
+    def check_status(self, loan_id: int) -> str | None:
+        try:
+            status = ''
+            today_date = date.today()
+
+            loan_data = datetime.strptime(self.read_loan(loan_id), '%Y-%m-%d')
+            date_return = loan_data[3]
+
+            if today_date > date_return:
+                status = 'atrasado'
+
+            else:
+                status = 'emprestado'
+
+            self.update(loan_id=loan_id, new_status=status)
+            return status
+
+        except Exception as err:
+            print(f'ERROR: {err}')
+            return 
         

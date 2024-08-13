@@ -2,7 +2,7 @@ import pymysql
 
 from auth.helper import AuthHelper
 from books.helper import BooksHelper
-# from database.loans import LoansHelper
+from loans.helper import LoansHelper
 from materials.helper import MaterialsHelper
 
 
@@ -22,7 +22,7 @@ class Database:
         self.cursor = self.connection.cursor()
         self.auth = AuthHelper(self.connection, self.cursor)
         self.books = BooksHelper(self.connection, self.cursor)
-        # self.loans = LoansHelper(self.connection, self.cursor)
+        self.loans = LoansHelper(self.connection, self.cursor)
         self.materials = MaterialsHelper(self.connection, self.cursor)
 
     def close(self):
