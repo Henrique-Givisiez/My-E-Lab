@@ -1,14 +1,13 @@
 import unittest
 import sys
 import os
-from time import sleep
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..','..', 'app'))
 
 from app.factory import create_app
 app = create_app()
 
-class TestCheckStatus(unittest.TestCase):
+class TestRenew(unittest.TestCase):
 
     def setUp(self):
         app.config["TESTING"] = True
@@ -20,7 +19,7 @@ class TestCheckStatus(unittest.TestCase):
     def tearDown(self) -> None:
         self.app_context.pop()
                         
-    def test_check_status_valid(self):
+    def test_renew_valid(self):
         login_response = self.app.post("/auth/login", json = {
             "login": "fulano123", 
             "password": "senha"
@@ -35,11 +34,13 @@ class TestCheckStatus(unittest.TestCase):
             "Authorization": f'Bearer {token}'
         }
 
-        check_status_response = self.app.get('/loans/check-status/11', headers=headers)
-        self.assertEqual(check_status_response.json, {"status": "emprestado"})
+        renew_response = self.app.put('/loans/renew/11', headers=headers, json={"new_date": "29/08/2024"})
+        
+        self.assertEqual(renew_response.status_code, 200)
+        self.assertEqual(renew_response.json, {"success": True, "new_date": "29/08/2024", 'msg': 'Empréstimo atualizado com sucesso!'})
 
 
-    def test_check_status_invalid(self):
+    def test_renew_invalid(self):
         login_response = self.app.post("/auth/login", json = {
             "login": "fulano123", 
             "password": "senha"
@@ -54,5 +55,8 @@ class TestCheckStatus(unittest.TestCase):
             "Authorization": f'Bearer {token}'
         }
 
-        check_status_response = self.app.get('/loans/check-status/0', headers=headers)
-        self.assertEqual(check_status_response.status_code, 404)
+        renew_response = self.app.put('/loans/renew/11', headers=headers, json={"new_date": "01/01/2024"})
+        
+        self.assertEqual(renew_response.status_code, 400)
+        self.assertEqual(renew_response.json, {"success": False, "new_date": "01/01/2024", 'msg': 'A data de devolução deve ser posterior à data do empréstimo.'})
+  

@@ -7,7 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..','..', 'app'))
 from app.factory import create_app
 app = create_app()
 
-class TestSignup(unittest.TestCase):
+class TestUpdate(unittest.TestCase):
 
     def setUp(self):
         app.config["TESTING"] = True

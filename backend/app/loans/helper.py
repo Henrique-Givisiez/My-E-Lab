@@ -65,9 +65,14 @@ class LoansHelper(BaseHelper):
         args = []
 
         if new_date_return:
-            update_loan_query += "Data_Devolucao = %s, "
             date_obj = datetime.strptime(new_date_return, "%d/%m/%Y")
+            date_loan = self.read_loan(loan_id)[2]
+            if date_obj.date() < date_loan:
+                msg = "A data de devolução deve ser posterior à data do empréstimo."
+                return False, msg 
+            
             date_fmt = date_obj.strftime("%Y-%m-%d")
+            update_loan_query += "Data_Devolucao = %s, "
             args.append(date_fmt)
 
         if new_status:
@@ -142,3 +147,20 @@ class LoansHelper(BaseHelper):
             print(f'ERROR: {err}')
             return 
         
+    def return_loan(self, loan_id: int) -> tuple[bool, str]:
+        today_date = date.today()
+        today_date = datetime.strftime(today_date, "%Y-%m-%d")
+        
+        status = "finalizado"
+
+        update_loan_query = "UPDATE Emprestimo SET Status_atual = %s, Data_Devolucao = %s WHERE Id_emprestimo = %s"
+        try:
+            self.cursor.execute(update_loan_query, (status, today_date, loan_id, ))
+            self.conn.commit()
+            msg = 'Empréstimo finalizado.'
+            return True, msg
+
+        except Exception as err:
+            self.conn.rollback() 
+            print(f'ERROR: {err}')
+            return False, err

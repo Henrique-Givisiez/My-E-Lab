@@ -8,7 +8,7 @@ from app.factory import create_app, database
 
 app = create_app()
 
-class TestSignup(unittest.TestCase):
+class TestRead(unittest.TestCase):
 
     def setUp(self):
         app.config["TESTING"] = True

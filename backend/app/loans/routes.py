@@ -82,7 +82,7 @@ def return_loan(loan_id):
     if not user_id:
         return jsonify({"success": False, "msg":"Operação não autorizada."}), 401
     
-    success, msg = database.loans.update(loan_id=loan_id, new_status='finalizado')
+    success, msg = database.loans.return_loan(loan_id)
 
     return jsonify({"success": success, "msg": msg}), (200 if success else 400)
 

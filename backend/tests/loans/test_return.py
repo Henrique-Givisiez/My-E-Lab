@@ -7,7 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..','..', 'app'))
 from app.factory import create_app
 app = create_app()
 
-class TestDelete(unittest.TestCase):
+class TestReturn(unittest.TestCase):
 
     def setUp(self):
         app.config["TESTING"] = True
@@ -18,8 +18,8 @@ class TestDelete(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.app_context.pop()
-        
-    def test_delete_valid(self):
+                        
+    def test_return_valid(self):
         login_response = self.app.post("/auth/login", json = {
             "login": "fulano123", 
             "password": "senha"
@@ -34,11 +34,7 @@ class TestDelete(unittest.TestCase):
             "Authorization": f'Bearer {token}'
         }
 
-        delete_response = self.app.delete("/books/delete/9788580550979", headers=headers)
-        self.assertEqual(delete_response.status_code, 200)
-        self.assertEqual(delete_response.json, {"msg": "Livro excluído.", "success": True})
-
-    
+        return_response = self.app.put('/loans/return/11', headers=headers)
         
-if __name__ == "__main__":
-    unittest.main()
+        self.assertEqual(return_response.status_code, 200)
+        self.assertEqual(return_response.json, {"success": True, 'msg': 'Empréstimo finalizado.'})
