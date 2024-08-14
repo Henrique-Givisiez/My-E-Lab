@@ -1,6 +1,7 @@
 import unittest
 import sys
 import os
+from time import sleep
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..','..', 'app'))
 
@@ -18,8 +19,8 @@ class TestCreateBook(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.app_context.pop()
-        
-    def test_delete_valid(self):
+                        
+    def test_check_status_valid(self):
         login_response = self.app.post("/auth/login", json = {
             "login": "fulano123", 
             "password": "senha"
@@ -34,11 +35,24 @@ class TestCreateBook(unittest.TestCase):
             "Authorization": f'Bearer {token}'
         }
 
-        delete_response = self.app.delete("/materials/delete/1452789630", headers=headers)
-        self.assertEqual(delete_response.status_code, 200)
-        self.assertEqual(delete_response.json, {"msg": "Material excluído.", "success": True})
+        check_status_response = self.app.get('/loans/check-status/11', headers=headers)
+        self.assertEqual(check_status_response.json, {"status": "emprestado"})
 
-    
+
+    def test_check_status_invalid(self):
+        login_response = self.app.post("/auth/login", json = {
+            "login": "fulano123", 
+            "password": "senha"
+        })
         
-if __name__ == "__main__":
-    unittest.main()
+        self.assertEqual(login_response.status_code, 200)
+        self.assertIn('access_token', login_response.json)
+
+        token = login_response.json['access_token']
+
+        headers = {
+            "Authorization": f'Bearer {token}'
+        }
+
+        check_status_response = self.app.get('/loans/check-status/0', headers=headers)
+        self.assertEqual(check_status_response.status_code, 404)

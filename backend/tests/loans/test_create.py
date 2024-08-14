@@ -1,6 +1,7 @@
 import unittest
 import sys
 import os
+from time import sleep
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..','..', 'app'))
 
@@ -19,7 +20,26 @@ class TestCreateBook(unittest.TestCase):
     def tearDown(self) -> None:
         self.app_context.pop()
                         
-    def test_update_valid(self):
+    def test_create_valid(self):
+        login_response = self.app.post("/auth/login", json = {
+            "login": "fulano123", 
+            "password": "senha"
+        })
+        
+        self.assertEqual(login_response.status_code, 200)
+        self.assertIn('access_token', login_response.json)
+
+        token = login_response.json['access_token']
+
+        headers = {
+            "Authorization": f'Bearer {token}'
+        }
+        
+        create_response = self.app.post('/loans/create', json = {"item_id": "9788580550979"}, headers=headers)
+        self.assertEqual(create_response.status_code, 201)
+        self.assertEqual(create_response.json, {"success": True, "msg": "Empréstimo bem sucedido!"})
+
+    def test_create_invalid(self):
         login_response = self.app.post("/auth/login", json = {
             "login": "fulano123", 
             "password": "senha"
@@ -34,29 +54,6 @@ class TestCreateBook(unittest.TestCase):
             "Authorization": f'Bearer {token}'
         }
 
-        update_response = self.app.put("/materials/update/1452789630", headers=headers, json={"new_category": "Biologia"})
-        self.assertEqual(update_response.status_code, 200)
-        self.assertEqual(update_response.json, {"success": True, "msg": "Material atualizado com sucesso!"})
-
-    def test_update_invalid_no_serial_number(self):
-        login_response = self.app.post("/auth/login", json = {
-            "login": "fulano123", 
-            "password": "senha"
-        })
-        
-        self.assertEqual(login_response.status_code, 200)
-        self.assertIn('access_token', login_response.json)
-
-        token = login_response.json['access_token']
-
-        headers = {
-            "Authorization": f'Bearer {token}'
-        }
-
-        update_response = self.app.put("/materials/update/ ", headers=headers, json={"new_location": "sala 1 corredor 3 prateleira 5"})
-        self.assertEqual(update_response.status_code, 400)
-        self.assertEqual(update_response.json, {"success": False, "msg": "Número de série não encontrado."})
-
-
-if __name__ == "__main__":
-    unittest.main()
+        create_response = self.app.post('/loans/create', json = {"item_id": ""}, headers=headers)
+        self.assertEqual(create_response.status_code, 400)
+        self.assertEqual(create_response.json, {"success": False, "msg": "Informações faltando."})

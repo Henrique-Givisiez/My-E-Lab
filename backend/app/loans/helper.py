@@ -18,8 +18,9 @@ class LoansHelper(BaseHelper):
                 loan_id = self.cursor.lastrowid
                 loan_created = self.read_loan(loan_id)
 
+
                 if loan_created:
-                    msg = "Empréstimo bem-sucedido!"
+                    msg = "Empréstimo bem sucedido!"
                     return True, msg
 
                 msg = "Falha no empréstimo. Tente novamente."    
@@ -36,7 +37,7 @@ class LoansHelper(BaseHelper):
         
     
     def read_loan(self, loan_id: int) -> list | None:
-        select_loan_query = "SELECT * FROM Emprestimo WHERE FK_id_item = %s"
+        select_loan_query = "SELECT * FROM Emprestimo WHERE Id_emprestimo = %s"
         try:
             self.cursor.execute(select_loan_query, (loan_id))
             loan_data = list(self.cursor.fetchone())
@@ -126,8 +127,7 @@ class LoansHelper(BaseHelper):
             status = ''
             today_date = date.today()
 
-            loan_data = datetime.strptime(self.read_loan(loan_id), '%Y-%m-%d')
-            date_return = loan_data[3]
+            date_return = self.read_loan(loan_id)[3]
 
             if today_date > date_return:
                 status = 'atrasado'
