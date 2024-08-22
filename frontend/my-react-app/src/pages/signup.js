@@ -4,7 +4,13 @@ import book_img from '../assets/images/books-svgrepo-com.svg'
 import open_book_img from '../assets/images/book-open-svgrepo-com.svg'
 import microscope_img from '../assets/images/microscope-svgrepo-com.svg'
 import chemistry_img from '../assets/images/lab-svgrepo-com.svg'
+import { useNavigate } from "react-router-dom";
+
 function Signup(){
+    const navigate = useNavigate();
+    const handleClick = () => {
+        navigate("/login");
+    }
     return (
         <body>
             <div className='images-background'>
@@ -95,7 +101,7 @@ function Signup(){
                         <input type='file' name='profile_img'/>
                     </div>
                 <button type='submit'>Registrar</button>
-                <p>Já possui uma conta? Faça o <a href=''>login</a></p>
+                <p>Já possui uma conta? Faça o <a onClick={handleClick}>login</a></p>
                 </form>
             </div>
         </body>
