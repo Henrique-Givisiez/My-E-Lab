@@ -6,7 +6,7 @@ body, html{
     overflow: hidden;
 }   
 
-.signup-images-background{
+.login-images-background{
     display: flex;
     margin-top: 30px;
     justify-content: space-between;
@@ -15,26 +15,26 @@ body, html{
     width: 100vw;
 }
 
-.signup-line-background{
+.login-line-background{
     display: flex;
     justify-content: space-around;
 }
 
-.signup-line-background img{
+.login-line-background img{
     height: 70%;
     width: 10%;
     color: #F6F1E6;
 }
 
-.signup-line-background img:nth-child(even){
+.login-line-background img:nth-child(even){
     transform: rotate(20deg);
 }
 
-.signup-line-background img:nth-child(odd){
+.login-line-background img:nth-child(odd){
     transform: rotate(-20deg);
 }
 
-.signup-container {
+.login-container {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -47,7 +47,7 @@ body, html{
     text-align: center;
 }
   
-.signup-form_area {
+.login-form_area {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -59,26 +59,26 @@ body, html{
     border-radius: 20px;
 }
   
-.signup-title {
+.login-title {
     color: #264143;
     font-weight: 900;
     font-size: 2em;
     margin-top: 20px;
 }
   
-.signup-sub_title {
+.login-sub_title {
     font-weight: 600;
     margin: 5px 0;
 }
   
-.signup-form_group {
+.login-form_group {
     display: flex;
     flex-direction: column;
     align-items: baseline;
     margin: 10px;
 }
   
-.signup-form_style {
+.login-form_style {
     border: 2px solid #264143;
     box-shadow: 3px 4px 0px 1px #E99F4C;
     width: 290px;
@@ -87,12 +87,12 @@ body, html{
     font-size: 15px;
 }
   
-.signup-form_style:focus, .signup-btn:focus {
+.login-form_style:focus, .login-btn:focus {
     transform: translateY(4px);
     box-shadow: 1px 2px 0px 0px #E99F4C;
 }
   
-.signup-btn {
+.login-btn {
     padding: 15px;
     margin: 20px 0px;
     width: 290px;
@@ -104,38 +104,13 @@ body, html{
     cursor: pointer;
 }
   
-.signup-btn:hover {
+.login-btn:hover {
     opacity: .9;
 }
   
-.signup-link {
+.login-link {
     font-weight: 800;
     color: #264143;
     padding: 5px;
 }
 
-.signup-select-group{
-    display: flex;
-    justify-content: baseline;
-}
-
-.signup-file_input {
-    display: none;
-}
-
-.signup-btn_upload{
-    display: flex;
-    justify-content: baseline;
-    border: 2px solid #264143;
-    box-shadow: 3px 4px 0px 1px #E99F4C;
-    width: 100%;
-    padding: 12px 10px;
-    border-radius: 4px;
-    font-size: 15px;
-    background-color: white;
-    cursor: pointer;
-}
-
-.signup-btn_upload img{
-    margin-right: 65px;
-}

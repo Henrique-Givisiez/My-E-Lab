@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import Signup from './pages/signup'
+import Login from './pages/login'
 import reportWebVitals from './reportWebVitals';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
@@ -10,6 +11,7 @@ root.render(
   <Router>
     <Routes>
       <Route path="/" element={<Signup /> } />
+      <Route path="/login" element={<Login /> } />
     </Routes>
   </Router>
 );
