@@ -4,16 +4,18 @@ import book_img from '../assets/images/books-svgrepo-com.svg'
 import open_book_img from '../assets/images/book-open-svgrepo-com.svg'
 import microscope_img from '../assets/images/microscope-svgrepo-com.svg'
 import chemistry_img from '../assets/images/lab-svgrepo-com.svg'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Signup(){
     const navigate = useNavigate();
     const handleLinkClick = () => {
         navigate("/");
     }
+    const location = useLocation();
+    const message = location.state?.message;
 
     return (
-        <body>
+        <div className='login-body'>
             <div className='login-images-background'>
                 <div className='login-line-background'>
                     <img src={open_book_img}></img>
@@ -43,6 +45,7 @@ function Signup(){
             <div className="login-container">
                 <div className="login-form_area">
                     <p className="login-title">Login</p>
+                    {message && <p>{message}</p>}
                     <form>
                         <div className="login-form_group">
                             <label className="login-sub_title" htmlFor="login">Login</label>
@@ -59,7 +62,7 @@ function Signup(){
                     </form>
                 </div>
             </div>
-        </body>
+        </div>
     )
 }
 

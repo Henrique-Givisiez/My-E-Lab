@@ -10,7 +10,7 @@ CREATE TABLE Usuario (
     Sobrenome VARCHAR(255) NOT NULL,
     Funcao VARCHAR(255) NOT NULL,
     Genero enum('m', 'f', 'n') NOT NULL,
-    URI BLOB
+    PROFILE_IMG LONGBLOB
 );
 
 CREATE TABLE Item (
@@ -26,7 +26,7 @@ CREATE TABLE Livro (
     Data_aquisicao DATE NOT NULL,
     Autor VARCHAR(255) NOT NULL,
     Localizacao VARCHAR(255) NOT NULL,
-    URI BLOB,
+    BOOK_COVER LONGBLOB,
     FOREIGN KEY (ISBN) REFERENCES Item (Id)
 );
 
@@ -37,7 +37,7 @@ CREATE TABLE Material_Didatico (
     Categoria VARCHAR(255) NOT NULL,
     Data_aquisicao DATE NOT NULL,
     Localizacao VARCHAR(255) NOT NULL,
-    URI BLOB,
+    MATERIAL_COVER LONGBLOB,
     FOREIGN KEY (Numero_serie) REFERENCES Item (Id)
 );
 

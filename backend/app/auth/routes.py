@@ -8,9 +8,25 @@ auth_bp = Blueprint('auth', __name__)
 @auth_bp.route('/signup', methods=['POST'])
 @cross_origin()
 def signup():
-    data = request.json
+    data = request.form
+    profile_img = request.files.get('profile_img')
+    
+
+    profile_img_data = None
+    if profile_img:
+        profile_img_data = profile_img.read() 
+
     try:
-        success, msg = database.auth.create(data['name'], data['last_name'], data['login'], data['password'], data['role'], data['gender'], data.get('profile_img'))
+
+        success, msg = database.auth.create(
+            data['name'],
+            data['last_name'],
+            data['login'],
+            data['password'],
+            data['role'],
+            data['gender'],
+            profile_img_data  
+        )    
     except KeyError:
         success = False
         msg = "Campos incompletos."

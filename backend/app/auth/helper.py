@@ -5,26 +5,28 @@ from flask_jwt_extended import create_access_token
 class AuthHelper(BaseHelper):
     def create(self, name: str, last_name: str, login: str, password: str, role: str, gender: str, profile_img: bytes = None) -> tuple[bool, str]:
         msg = ""
-        if name and last_name and login and password and role and gender:
-            hashed_password = sha256(password.encode()).hexdigest()
+        try:
+            if name and last_name and login and password and role and gender:
+                hashed_password = sha256(password.encode()).hexdigest()
 
-            insert_user_query = "INSERT INTO Usuario (Login, Senha, Nome, Sobrenome, Funcao, Genero, URI) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+                insert_user_query = "INSERT INTO Usuario (Login, Senha, Nome, Sobrenome, Funcao, Genero, Profile_img) VALUES (%s, %s, %s, %s, %s, %s, %s)"
 
-            try:
-                self.cursor.execute(insert_user_query, ( login, hashed_password, name, last_name, role, gender, profile_img))
-                self.conn.commit()
-                msg = "Conta criada com sucesso!"
-                return True, msg
+                try:
+                    self.cursor.execute(insert_user_query, ( login, hashed_password, name, last_name, role, gender, profile_img))
+                    self.conn.commit()
+                    msg = "Conta criada com sucesso!"
+                    return True, msg
 
-            except Exception as err:
-                self.conn.rollback()
-                print(f"ERROR: {err}")
-                return False, err
+                except Exception as err:
+                    self.conn.rollback()
+                    print(f"ERROR: {err}")
+                    return False, err
 
-        else:
-            msg = "Campos incompletos."
-            return False, msg
-        
+            else:
+                msg = "Campos incompletos."
+                return False, msg
+        except Exception as err:
+            print(err)
     def read(self, user_id: int = None, login: str = None) -> list | None:
         if user_id:
             select_user_query = "SELECT * FROM Usuario WHERE Id = %s"
