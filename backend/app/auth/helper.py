@@ -6,6 +6,10 @@ class AuthHelper(BaseHelper):
     def create(self, name: str, last_name: str, login: str, password: str, role: str, gender: str, profile_img: bytes = None) -> tuple[bool, str]:
         msg = ""
         try:
+            login_exists = self.read(login=login)
+            if login_exists:
+                return False, "Login já registrado."
+            
             if name and last_name and login and password and role and gender:
                 hashed_password = sha256(password.encode()).hexdigest()
 
@@ -19,21 +23,22 @@ class AuthHelper(BaseHelper):
 
                 except Exception as err:
                     self.conn.rollback()
-                    print(f"ERROR: {err}")
-                    return False, err
+                    return False, str(err)
 
             else:
                 msg = "Campos incompletos."
                 return False, msg
         except Exception as err:
-            print(err)
+            return False, str(err)
+
     def read(self, user_id: int = None, login: str = None) -> list | None:
         if user_id:
             select_user_query = "SELECT * FROM Usuario WHERE Id = %s"
             try:
                 self.cursor.execute(select_user_query, (user_id,))
                 user_data = list(self.cursor.fetchone())
-                user_data[-1] = user_data[-1].decode('utf-8')
+                if user_data[-1]:
+                    user_data[-1] = user_data[-1].decode('utf-8')
                 return user_data 
             
             except Exception as err:
@@ -45,7 +50,8 @@ class AuthHelper(BaseHelper):
             try:
                 self.cursor.execute(select_user_query, (login, ))
                 user_data = list(self.cursor.fetchone())
-                user_data[-1] = user_data[-1].decode('utf-8')
+                if user_data[-1]:
+                    user_data[-1] = user_data[-1].decode('utf-8')
                 return user_data 
             
             except Exception as err:

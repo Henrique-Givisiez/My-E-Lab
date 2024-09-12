@@ -1,12 +1,14 @@
 from flask import Flask, g
 from flask_jwt_extended import JWTManager
 from database.conn_database import Database
+from flask_cors import CORS
 
 database = Database()
 
 def create_app():
     app = Flask(__name__)
 
+    CORS(app)
     app.config['MYSQL_HOST'] = 'localhost'
     app.config['MYSQL_PORT'] = '3306'
     app.config['MYSQL_USER'] = 'myuser'

@@ -10,7 +10,8 @@ CREATE TABLE Usuario (
     Sobrenome VARCHAR(255) NOT NULL,
     Funcao VARCHAR(255) NOT NULL,
     Genero enum('m', 'f', 'n') NOT NULL,
-    PROFILE_IMG LONGBLOB
+    PROFILE_IMG LONGBLOB,
+    UNIQUE (Login)
 );
 
 CREATE TABLE Item (
