@@ -49,10 +49,38 @@ class LoansHelper(BaseHelper):
         
 
     def read_user_loans(self, user_id: int) -> list | None:
-        select_loan_query = "SELECT * FROM Emprestimo WHERE FK_id_usuario = %s"
+        select_loan_query = """
+        SELECT 
+            CASE 
+                WHEN i.tipo_item = 'livro' THEN l.Titulo
+                WHEN i.tipo_item = 'material' THEN m.Nome
+            END AS Nome_Titulo,
+            e.Id_emprestimo,
+            i.Tipo_item,
+            e.Data_Emprestimo,
+            e.Data_Devolucao,
+            e.Status_atual
+        FROM emprestimo e
+        INNER JOIN item i ON e.FK_id_item = i.Id
+        LEFT JOIN livro l ON i.Id = l.ISBN
+        LEFT JOIN material_didatico m ON i.Id = m.Numero_serie
+        WHERE e.FK_id_usuario = %s;"""
+
         try:
             self.cursor.execute(select_loan_query, (user_id))
-            user_loans = list(self.cursor.fetchall())
+            rows = list(self.cursor.fetchall())
+
+            user_loans = [
+            {
+                "nome_titulo": row[0],
+                "Id_emprestimo": row[1],
+                "tipo_item": row[2],
+                "Data_Emprestimo": row[3].strftime("%d/%m/%Y"),
+                "Data_Devolucao": row[4].strftime("%d/%m/%Y"),
+                "Status_atual": row[5]
+            }
+            for row in rows
+        ]
             return user_loans
         
         except Exception as err:

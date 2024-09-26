@@ -55,10 +55,17 @@ function Login(){
                     const role = decodedToken.role;
                     const login = decodedToken.login;
                     const user_id = decodedToken.sub;
-                    navigate("/loans", { state: { role, login, user_id } });
+                    const user_name = decodedToken.name;
+                    navigate("/loans", { state: {
+                        message: result.msg
+                        , role: role
+                        , login: login
+                        , user_id: user_id
+                        , user_name: user_name
+                    } });
                 } 
             } else {
-                showToastMessage(result.msg, result.success)
+                showToastMessage(result.msg, result.access_token);
             }
         } catch (error) {
             console.error('Erro ao enviar formulário:', error);

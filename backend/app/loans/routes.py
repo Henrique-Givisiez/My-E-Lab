@@ -78,14 +78,17 @@ def renew_loan(loan_id):
 @cross_origin()
 @jwt_required()
 def return_loan(loan_id):
-    user_id = get_jwt_identity()
-    if not user_id:
-        return jsonify({"success": False, "msg":"Operação não autorizada."}), 401
-    
-    success, msg = database.loans.return_loan(loan_id)
+    try:
+        user_id = get_jwt_identity()
+        if not user_id:
+            return jsonify({"success": False, "msg":"Operação não autorizada."}), 401
+        
+        success, msg = database.loans.return_loan(loan_id)
 
-    return jsonify({"success": success, "msg": msg}), (200 if success else 400)
+        return jsonify({"success": success, "msg": msg}), (200 if success else 400)
 
+    except Exception as err:
+        return jsonify({"error": "Ocorreu um erro inesperado", "details": str(err)}), 500
 
 @loans_bp.route('/delete/<loan_id>', methods=['DELETE'])
 @cross_origin()

@@ -1,15 +1,96 @@
 import "../assets/styles/loans.css";
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import showToastMessage from '../components/toast_message';
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Loans() {
+    const location = useLocation();
+    const message = location.state?.message;
+    const login = location.state?.login;
+    const role = location.state?.role;
+    const user_id = location.state?.user_id;
+    const user_name = location.state?.user_name;
+    const [loans, setLoans] = useState([]);
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+        if (message !== undefined) {
+            showToastMessage(message);  
+        }
+    }, [message]); 
+    
     useEffect(() => {
         document.body.style.backgroundColor = 'beige'; 
         document.body.style.fontFamily = '"Poppins", sans-serif';
         return () => {
-          document.body.style.backgroundColor = '';
+            document.body.style.backgroundColor = '';
         };
-      }, []);
+    }, []);
+    
+    useEffect(() => {
+        const token = sessionStorage.getItem("access_token");
+    
+        if (!token) {
+            navigate("/login");
+        }
+        
+        fetch("http://127.0.0.1:5000/loans/read-by-user", {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro na requisição, status: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            setLoans(data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }, []);
+
+    const returnLoan = (id) => {
+        const token = sessionStorage.getItem("access_token");
+        fetch(`http://127.0.0.1:5000/loans/return/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro na requisição, status: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(updatedLoan => {
+            setLoans(prevLoans =>
+                prevLoans.map(loan => 
+                    loan.Id_emprestimo === updatedLoan.Id_emprestimo
+                    ? { ...loan, Status_atual: "devolvido" }
+                    : loan                )
+            );
+
+            const button = document.getElementById(`returnBtn-${id}`);
+            if (button) {
+                button.className = "btn-devolvido";
+                button.textContent = "Finalizado";
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
     return (
+
         <div className="loans">
             <div className="side-nav">
                 <div className="link-pages">
@@ -53,7 +134,7 @@ function Loans() {
                 </div>
             </div>
             <div className="main">
-                <h1>Seus empréstimos, Henrique!</h1>
+                <h1>Seus empréstimos, {user_name}</h1>
                 <table>
                 <thead>
                     <tr>
@@ -65,132 +146,15 @@ function Loans() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>As brumas de avalon</td>
-                        <td>Livro</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolver">Devolver</button></td>
-                    </tr>
-                    <tr>
-                        <td>Guerra dos Tronos</td>
-                        <td>Livro</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolver">Devolver</button></td>
-                    </tr>
-                    <tr>
-                        <td>Microscópio eletrônico</td>
-                        <td>Material</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolvido">Devolvido</button></td>
-                    </tr>
-                    <tr>
-                        <td>Introdução à Engenharia de Produção</td>
-                        <td>Livro</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolver">Devolver</button></td>
-                    </tr>
-                    <tr>
-                        <td>Equipamento de Teste de Qualidade de Água</td>
-                        <td>Material</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolvido">Devolvido</button></td>
-                    </tr>
-                    <tr>
-                        <td>As brumas de avalon</td>
-                        <td>Livro</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolver">Devolver</button></td>
-                    </tr>
-                    <tr>
-                        <td>Guerra dos Tronos</td>
-                        <td>Livro</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolver">Devolver</button></td>
-                    </tr>
-                    <tr>
-                        <td>Microscópio eletrônico</td>
-                        <td>Material</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolvido">Devolvido</button></td>
-                    </tr>
-                    <tr>
-                        <td>Introdução à Engenharia de Produção</td>
-                        <td>Livro</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolver">Devolver</button></td>
-                    </tr>
-                    <tr>
-                        <td>Equipamento de Teste de Qualidade de Água</td>
-                        <td>Material</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolvido">Devolvido</button></td>
-                    </tr>
-                    <tr>
-                        <td>As brumas de avalon</td>
-                        <td>Livro</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolver">Devolver</button></td>
-                    </tr>
-                    <tr>
-                        <td>Guerra dos Tronos</td>
-                        <td>Livro</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolver">Devolver</button></td>
-                    </tr>
-                    <tr>
-                        <td>Microscópio eletrônico</td>
-                        <td>Material</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolvido">Devolvido</button></td>
-                    </tr>
-                    <tr>
-                        <td>Introdução à Engenharia de Produção</td>
-                        <td>Livro</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolver">Devolver</button></td>
-                    </tr>
-                    <tr>
-                        <td>Equipamento de Teste de Qualidade de Água</td>
-                        <td>Material</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolvido">Devolvido</button></td>
-                    </tr>
-                    <tr>
-                        <td>As brumas de avalon</td>
-                        <td>Livro</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolver">Devolver</button></td>
-                    </tr>
-                    <tr>
-                        <td>Guerra dos Tronos</td>
-                        <td>Livro</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolver">Devolver</button></td>
-                    </tr>
-                    <tr>
-                        <td>Microscópio eletrônico</td>
-                        <td>Material</td>
-                        <td>10/10/2023</td>
-                        <td>10/11/2023</td>
-                        <td><button className="btn-devolvido">Devolvido</button></td>
-                    </tr>
+                    {loans.map((loans) => (
+                        <tr key={loans.Id_emprestimo}>
+                            <td>{loans.nome_titulo}</td>
+                            <td>{loans.tipo_item}</td>
+                            <td>{loans.Data_Emprestimo}</td>
+                            <td>{loans.Data_Devolucao}</td>
+                            <td><button id={`returnBtn-${loans.Id_emprestimo}`} onClick={() => returnLoan(loans.Id_emprestimo)} disabled={loans.Status_atual === "finalizado"} className={loans.Status_atual === "emprestado" ? "btn-devolver" : "btn-devolvido"}>{loans.Status_atual === "emprestado" ? "Devolver" : "Finalizado"}</button></td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
             </div>

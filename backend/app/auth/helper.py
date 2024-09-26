@@ -146,10 +146,11 @@ class AuthHelper(BaseHelper):
                     user_id = user[0]
                     try:
                         role = user[5]
-                        name = user[3]
+                        name = str(user[3]).capitalize()
                         add_claims = {
                             "role" : role,
                             "login" : login,
+                            "name" : name
                         }
 
                         access_token = create_access_token(identity = user_id, additional_claims = add_claims)

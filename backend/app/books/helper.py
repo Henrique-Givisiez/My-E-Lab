@@ -10,7 +10,7 @@ class BooksHelper(BaseHelper):
             data_obj = datetime.strptime(date, "%d/%m/%Y")
             data_formatada = data_obj.strftime("%Y-%m-%d")
             insert_book_query = """
-            INSERT INTO Livro (ISBN, Titulo, Descricao, Categoria, Data_aquisicao, Autor, Localizacao, URI)
+            INSERT INTO Livro (ISBN, Titulo, Descricao, Categoria, Data_aquisicao, Autor, Localizacao, Book_cover)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """
             insert_item_query = "INSERT INTO Item (Id, Tipo_item) VALUES (%s, %s)"
