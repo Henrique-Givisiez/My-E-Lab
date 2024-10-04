@@ -4,14 +4,14 @@ use my_e_lab_database;
 
 CREATE TABLE Usuario (
 	Id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    Login VARCHAR(255) NOT NULL,
+    Email VARCHAR(255) NOT NULL,
     Senha VARCHAR(255) NOT NULL,
     Nome VARCHAR(255) NOT NULL,
     Sobrenome VARCHAR(255) NOT NULL,
     Funcao VARCHAR(255) NOT NULL,
     Genero enum('m', 'f', 'n') NOT NULL,
     PROFILE_IMG LONGBLOB,
-    UNIQUE (Login)
+    UNIQUE (Email)
 );
 
 CREATE TABLE Item (

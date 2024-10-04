@@ -52,7 +52,7 @@ function Signup(){
 
 
     const [formData, setFormData] = useState({
-        login: '',
+        email: '',
         password: '',
         name: '',
         last_name: '',
@@ -142,8 +142,8 @@ function Signup(){
                     <p className="signup-title">Cadastro</p>
                     <form onSubmit={handleSubmit}>
                         <div className="signup-form_group">
-                            <label className="signup-sub_title" htmlFor="login">Login</label>
-                            <input name="login" placeholder="Digite seu login" className="signup-form_style" type="text" onChange={handleInputChange} required />
+                            <label className="signup-sub_title" htmlFor="email">Email</label>
+                            <input name="email" placeholder="Digite seu email" className="signup-form_style" type="email" onChange={handleInputChange} required />
                         </div>
                         <div className="signup-form_group">
                             <label className="signup-sub_title" htmlFor="password">Senha</label>

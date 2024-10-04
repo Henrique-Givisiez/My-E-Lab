@@ -11,17 +11,19 @@ def signup():
     data = request.form
     profile_img = request.files.get('profile_img')
     
-
     profile_img_data = None
     if profile_img:
         profile_img_data = profile_img.read() 
 
     try:
+        data = dict(data)
+        for key, value in data.items():
+            data[key] = value.strip()
 
         success, msg = database.auth.create(
             data['name'],
             data['last_name'],
-            data['login'],
+            data['email'],
             data['password'],
             data['role'],
             data['gender'],
@@ -38,12 +40,25 @@ def signup():
 def login():
     data = request.json
     try:
-        jwt_token, msg = database.auth.check_login(data['login'], data['password'])
+        jwt_token, msg = database.auth.check_login(data['email'], data['password'])
     except KeyError:
         jwt_token = False
         msg = "Campos incompletos."
     return jsonify({"access_token": jwt_token, "msg": msg}), (200 if jwt_token else 401)
 
+@auth_bp.route('/all-users', methods=['GET'])
+@jwt_required()
+@cross_origin()
+def read_all_uses():
+    user_id = get_jwt_identity()
+    claims = get_jwt()
+    role = claims["role"]
+    if not user_id:
+        return jsonify(msg="Operação não autorizada."), 401
+    if role == "admin":
+        all_users = database.auth.read_all()
+        return jsonify(data=all_users)
+    return jsonify(msg="Usuário não tem permissão para realizar essa operação."), 403
 
 @auth_bp.route('/details/<user_info>', methods=['GET'])
 @jwt_required()
@@ -58,7 +73,7 @@ def user_details(user_info):
     except ValueError:
         user_data = database.auth.read(login=user_info)
     finally:
-        return jsonify(user_data) if user_data else ('', 404)
+        return jsonify(data=user_data) if user_data else ('', 404)
 
 
 @auth_bp.route('/update/<id_to_update>', methods=['PUT'])

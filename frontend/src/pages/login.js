@@ -53,13 +53,13 @@ function Login(){
                 const decodedToken = jwtDecode(token);
                 if (decodedToken) {
                     const role = decodedToken.role;
-                    const login = decodedToken.login;
+                    const email = decodedToken.email;
                     const user_id = decodedToken.sub;
                     const user_name = decodedToken.name;
                     navigate("/loans", { state: {
                         message: result.msg
                         , role: role
-                        , login: login
+                        , email: email
                         , user_id: user_id
                         , user_name: user_name
                     } });
@@ -111,8 +111,8 @@ function Login(){
                     <p className="login-title">Login</p>
                     <form onSubmit={handleSubmit}>
                         <div className="login-form_group">
-                            <label className="login-sub_title" htmlFor="login">Login</label>
-                            <input name="login" placeholder="Digite seu login" className="login-form_style" type="text" onChange={handleInputChange} required />
+                            <label className="login-sub_title" htmlFor="email">Email</label>
+                            <input name="email" placeholder="Digite seu email" className="login-form_style" type="email" onChange={handleInputChange} required />
                         </div>
                         <div className="login-form_group">
                             <label className="login-sub_title" htmlFor="password">Senha</label>

@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+body{
+    font-family: "Poppins", sans-serif;
+    background-color: beige;
+}
+
+.side-nav{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: fixed;
+    z-index: 1;
+    width: 100px;
+    top: 0;
+    left: 0;
+    background-color: #ac6b3f;
+    overflow-x: hidden;
+    align-items: center;
+    transition: 0.5s;
+    padding: 3px;
+}
+
+.link-pages{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 13px;
+    height: 100%;
+}
+
+.btn-page{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 10px;
+    transition: 0.3s;
+    padding: 5px;
+}
+
+.btn-page:hover{
+    background-color: #612c095e;
+}
+.btn-page svg{
+    color: #F6F1E6;
+    width: 20px;
+    height: 20px;
+}
+.btn-page:nth-child(1) svg{
+    width: 25px;
+    height: 25px;
+}
+.btn-page p{
+    text-decoration: none;
+    color: #F6F1E6;
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.main-profile{
+    margin-top: 0;
+    margin-left: 150px;
+    margin-right: 50px;
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+.profile-img-div-container{
+    display: flex;
+    align-items: center;
+}
+
+.profile-img-div-container p{
+    font-size: 20px;
+    margin-left: 20px;
+}
+
+.profile-img{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-div-container{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-div-container input{
+    width: 98%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid #ac6b3f;
+    border-radius: 5px;
+}
+
+.profile-info-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.container-btns{
+    display: flex;
+    justify-content: end;
+    margin-top: 20px;
+    height: 40px;
+}
+
+.btn-edit{
+    height: 100%;
+    width: 100px;
+    padding: 10px;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #4681f4;
+    color: #F6F1E6;
+    margin-left: 10px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-edit:active {
+    background-color: #335fb6; 
+    transform: scale(0.98); 
+}
+    
+.btn-edit:focus {
+    outline: none; 
+    box-shadow: 0 0 10px rgba(70, 129, 244, 0.7); 
+}
+
+.btn-edit:hover{
+    background-color: #3a6fd3;
+}
+
+.btn-delete{
+    height: 100%;
+    width: 105px;
+    padding: 10px;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #ff0000;
+    color: #F6F1E6;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-delete:active {
+    background-color: #b30000; 
+    transform: scale(0.98); 
+}
+    
+.btn-delete:focus {
+    outline: none; 
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.7); 
+}
+
+.btn-delete:hover{
+    background-color: #cc0000;
+}
+
+.btn-change-password {
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: #4681f4; 
+    color: white; 
+    padding: 12px 24px; 
+    font-weight: bold; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease, transform 0.2s ease; 
+}
+
+.btn-change-password:hover {
+    background-color: #3a6fd3; 
+}
+
+.btn-change-password:active {
+    background-color: #335fb6; 
+    transform: scale(0.98); 
+}
+
+.btn-change-password:focus {
+    outline: none; 
+    box-shadow: 0 0 10px rgba(70, 129, 244, 0.7); 
+}
