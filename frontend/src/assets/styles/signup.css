@@ -3,8 +3,8 @@ body, html{
     height: 100%;
     margin: 0;
     background-color: #ac6b3f;
-    overflow: hidden;
-}   
+    /* overflow: hidden; */
+}  
 
 .signup-images-background{
     display: flex;

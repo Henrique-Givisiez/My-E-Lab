@@ -197,11 +197,11 @@ function Profile() {
                         </div>
                         <div className="profile-div-container">
                             <label htmlFor="gender">Gênero</label>
-                            <input type="text" id="gender-input" name="new_gender" placeholder={gender} disabled={formDisabled} onChange={handleInputChange}></input>
-                        </div>
-                        <div className="profile-div-container">
-                            <label htmlFor="role">Função</label>
-                            <input type="text" id="role-input" name="new_role" placeholder={role} disabled={formDisabled} onChange={handleInputChange}></input>
+                            <select name="new_gender" disabled={formDisabled} placeholder={gender} style={{width:"100.3%"}} onChange={handleInputChange}>
+                                    <option value="m">Masculino</option>
+                                    <option value="f">Feminino</option>
+                                    <option value="n">Não informar</option>
+                            </select>
                         </div>
                         <div className="profile-div-container">
                             <label htmlFor="email">E-mail</label>

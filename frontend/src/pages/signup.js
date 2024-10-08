@@ -18,6 +18,13 @@ function Signup(){
         setPasswordStrength(checkPasswordStrength(newPassword));
     };
 
+    useEffect(() => {
+        document.body.style.fontFamily = '"Poppins", sans-serif';
+        return () => {
+            document.body.style.backgroundColor = '';
+        };
+    }, []);
+    
     const checkPasswordStrength = (password) => {
         let strength = 0;
 

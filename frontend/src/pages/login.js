@@ -30,7 +30,13 @@ function Login(){
             [name]: value,
         });
     };
-
+    useEffect(() => {
+        // document.body.style.backgroundColor = 'beige'; 
+        document.body.style.fontFamily = '"Poppins", sans-serif';
+        return () => {
+            document.body.style.backgroundColor = '';
+        };
+    }, []);
     const handleSubmit = async (e) => {
         e.preventDefault();
 

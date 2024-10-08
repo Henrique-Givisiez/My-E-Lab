@@ -93,6 +93,14 @@
     border-radius: 5px;
 }
 
+.profile-div-container select{
+    width: 98%;
+    padding: 12px;  
+    margin-top: 10px;
+    border: 1px solid #ac6b3f;
+    border-radius: 5px;
+}
+
 .profile-info-container{
     display: flex;
     flex-direction: column;
