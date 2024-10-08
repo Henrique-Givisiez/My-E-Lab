@@ -9,22 +9,25 @@ import search_svg from '../assets/images/search-icon.svg';
 import register_svg from '../assets/images/register-icon.svg';
 import users_svg from '../assets/images/users-icon.svg';
 import dev_svg from '../assets/images/dev-icon.svg';
+import { jwtDecode } from "jwt-decode";
 
 function Loans() {
+    const token = sessionStorage.getItem("access_token");
+    const decodedToken = jwtDecode(token);
     const location = useLocation();
     const message = location.state?.message;
     const login = location.state?.login;
-    const role = location.state?.role;
     const user_id = location.state?.user_id;
-    const user_name = location.state?.user_name;
     const [loans, setLoans] = useState([]);
     const navigate = useNavigate();
-    
+    const role = decodedToken.role;
+    const user_name = decodedToken.name;
+
     const [userRole, setUserRole] = useState(role);
     
     const getNavLinks = () => {
         const links = [
-        { name: "Perfil", roles: ["estudante", "professor", "admin"], img: profile_svg, link_page: "profile" },
+            { name: "Perfil", roles: ["estudante", "professor", "admin"], img: profile_svg, link_page: "profile" },
         { name: "Empréstimos", roles: ["estudante", "professor", "admin"], img: card_list_svg, link_page: "loans" },
         { name: "Consulta", roles: ["estudante", "professor", "admin"], img: search_svg, link_page: "search" },
         { name: "Cadastro", roles: ["professor", "admin"], img: register_svg, link_page: "register" },

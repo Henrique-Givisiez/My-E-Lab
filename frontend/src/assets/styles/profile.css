@@ -1,9 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-body{
-    font-family: "Poppins", sans-serif;
-    background-color: beige;
-}
-
 .side-nav{
     display: flex;
     flex-direction: column;
@@ -46,15 +41,12 @@ body{
 .btn-page:hover{
     background-color: #612c095e;
 }
-.btn-page svg{
-    color: #F6F1E6;
+.btn-page img{
     width: 20px;
     height: 20px;
+    filter: invert(100%);
 }
-.btn-page:nth-child(1) svg{
-    width: 25px;
-    height: 25px;
-}
+
 .btn-page p{
     text-decoration: none;
     color: #F6F1E6;
@@ -140,6 +132,35 @@ body{
 
 .btn-edit:hover{
     background-color: #3a6fd3;
+}
+
+.btn-save{
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 100%;
+    width: 100px;
+    padding: 10px;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #009b40;
+    color: #F6F1E6;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-save:active {
+    background-color: #005825; 
+    transform: scale(0.98); 
+}
+
+.btn-save:focus {
+    outline: none; 
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.7); 
+}
+
+.btn-save:hover{
+    background-color: #005825;
 }
 
 .btn-delete{

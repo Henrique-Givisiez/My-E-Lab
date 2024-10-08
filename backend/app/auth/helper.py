@@ -1,6 +1,7 @@
 from hashlib import sha256
 from database.base_helper import BaseHelper
 from flask_jwt_extended import create_access_token
+from datetime import timedelta
 import base64
 
 class AuthHelper(BaseHelper):
@@ -119,7 +120,7 @@ class AuthHelper(BaseHelper):
             print(f"ERROR: {err}")
             return None
          
-    def update(self, user_id: int, new_name: str, new_last_name: str, new_password: str, new_profile_img: bytes, new_gender: str) -> tuple[bool, str]:
+    def update(self, user_id: int, new_name: str, new_last_name: str, new_password: str, new_profile_img: bytes, new_gender: str, new_role: str, new_email: str) -> tuple[bool, str]:
         fields_to_update = []
         args = []
         msg = ""
@@ -137,12 +138,20 @@ class AuthHelper(BaseHelper):
             args.append(hashed_password)
         
         if new_profile_img:
-            fields_to_update.append("URI = %s")
+            fields_to_update.append("PROFILE_IMG = %s")
             args.append(new_profile_img)
         
         if new_gender:
-            fields_to_update.append("Gender = %s")
+            fields_to_update.append("Genero = %s")
             args.append(new_gender)
+        
+        if new_role:
+            fields_to_update.append('Funcao = %s')
+            args.append(new_role)
+
+        if new_email:
+            fields_to_update.append('Email = %s')
+            args.append(new_email)
             
         if not len(fields_to_update):
             msg = "Informações não fornecidas."
@@ -210,7 +219,8 @@ class AuthHelper(BaseHelper):
                             "name" : name
                         }
 
-                        access_token = create_access_token(identity = user_id, additional_claims = add_claims)
+                        expires = timedelta(minutes=30)
+                        access_token = create_access_token(identity = user_id, additional_claims = add_claims, expires_delta=expires)
                         msg = f"Bem-vindo(a), {name}!"
                         return access_token, msg
 
