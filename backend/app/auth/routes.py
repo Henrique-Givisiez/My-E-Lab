@@ -117,3 +117,13 @@ def delete_user(id_to_delete):
         success, msg = database.auth.delete(id_to_delete)
         return jsonify({"success": success, "msg": msg}), (200 if success else 400)
     return jsonify({"success": False, "msg":"Usuário não tem permissão para realizar essa operação."}), 403
+
+@auth_bp.route('/confirm_password', methods=['POST'])
+@jwt_required()
+@cross_origin()
+def confirm_password():
+    user_id = get_jwt_identity()
+    data = request.json
+    password = data['confirm_password']
+    success= database.auth.confirm_password(user_id, password)
+    return jsonify(success=success), (200 if success else 401)

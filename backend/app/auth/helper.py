@@ -253,4 +253,19 @@ class AuthHelper(BaseHelper):
         except Exception as err:
             print(f"ERROR: {err}")
             return True
+        
+    def confirm_password(self, user_id: int, password: str) -> bool:
+        select_user_query = "SELECT Senha FROM Usuario WHERE Id = %s"
+        try:
+            self.cursor.execute(select_user_query, (user_id, ))
+            user_password = self.cursor.fetchone()[0]
+            hashed_password = sha256(password.encode()).hexdigest()
+            if user_password == hashed_password:
+                return True
+            
+            return False
+        
+        except Exception as err:
+            print(f"ERROR: {err}")
+            return False
 

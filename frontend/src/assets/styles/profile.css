@@ -86,7 +86,7 @@
 }
 
 .profile-div-container input{
-    width: 98%;
+    width: auto;
     padding: 12px;
     margin-top: 10px;
     border: 1px solid #ac6b3f;
@@ -94,7 +94,7 @@
 }
 
 .profile-div-container select{
-    width: 98%;
+    width: auto;
     padding: 12px;  
     margin-top: 10px;
     border: 1px solid #ac6b3f;
@@ -223,4 +223,38 @@
 .btn-change-password:focus {
     outline: none; 
     box-shadow: 0 0 10px rgba(70, 129, 244, 0.7); 
+}
+
+.form-confirm-password-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+.form-confirm-password-container {
+background-color: white;
+padding: 20px;
+border-radius: 8px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+z-index: 1010;
+max-width: 400px;
+width: 100%;
+text-align: center;
+}
+
+
+.form-confirm-password-container input {
+width: 95%;
+padding: 8px;
+margin-top: 10px;
+margin-bottom: 10px;
+border: 1px solid #ccc;
+border-radius: 4px;
 }
