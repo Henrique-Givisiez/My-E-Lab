@@ -8,8 +8,9 @@ import search_svg from '../assets/images/search-icon.svg';
 import register_svg from '../assets/images/register-icon.svg';
 import users_svg from '../assets/images/users-icon.svg';
 import dev_svg from '../assets/images/dev-icon.svg';
-import showToastMessage from '../components/toast_message';
+import pencil_square_svg from '../assets/images/pencil-square.svg';
 
+import showToastMessage from '../components/toast_message';
 function Profile() {
     const navigate = useNavigate();
     const token = sessionStorage.getItem("access_token");
@@ -124,7 +125,7 @@ function Profile() {
         if (data.success) {
             handleSaveButton(e);
         } else {
-            console.log('Password does not match.');
+            showToastMessage("Senha incorreta. Tente novamente!", false);
         }
         setPassword('');
         })
@@ -226,7 +227,11 @@ function Profile() {
             <form id='form-update' className="main-profile">
                 <h1>Perfil</h1>
                 <div className="profile-img-div-container">
-                    <img src={`data:image/jpeg;base64,${profileImg}`} alt="Profile" className="profile-img"></img>
+                    {profileImg ? (
+                        <img src={`data:image/jpeg;base64,${profileImg}`} alt="Profile" className="profile-img"></img>
+                    ) : (
+                        <img src={profile_svg} alt="Profile" className="profile-icon-svg"></img>
+                    )}
                     <p>Foto de perfil</p>
                 </div>
                 <div className="profile-info-container">
