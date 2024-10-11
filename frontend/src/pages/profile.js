@@ -1,4 +1,4 @@
-import React, { useEffect,  useState } from 'react';
+import React, { useEffect,  useState, useRef     } from 'react';
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import '../assets/styles/profile.css';
@@ -47,7 +47,7 @@ function Profile() {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [formDisabled, setFormDisabled] = useState(true);
-
+    const [isDeleting, setIsDeleting] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     
     const handleEditButton = (e) => {
@@ -88,15 +88,17 @@ function Profile() {
     };
     
     const handleFileChange = (e) => {
-        setFormData({
+        const file = e.target.files[0];
+    
+          setFormData({
             ...formData,
-            profile_img: e.target.files[0],
-        });
-    };
+            new_profile_img: file,
+        })
+      };
     
     const [confirm_password, setPassword] = useState('');
 
-    const handleShowConfirm = (e) => {
+    const handleShowSaveConfirm = (e) => {
         e.preventDefault();
         if (!isSaving) {
             setIsSaving(true);
@@ -105,15 +107,24 @@ function Profile() {
         }
       };
 
+    const handleShowDeleteConfirm = (e) => {
+        e.preventDefault();
+        if (!isDeleting) {
+          setIsDeleting(true);
+        } else {   
+          setIsDeleting(false);
+        }
+      };
+      
     const handleBackgroundClick = (e) => {
         if (e.target.className === 'form-confirm-password-background') {
             setIsSaving(false);
         }
     };
     
-    const handleConfirmPassword = async (e) => {
+    const handleConfirmPassword = (e) => {
         e.preventDefault();
-        fetch('http://127.0.0.1:5000/auth/confirm_password', {
+        return fetch('http://127.0.0.1:5000/auth/confirm_password', {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
@@ -123,17 +134,21 @@ function Profile() {
         })
         .then((response) => response.json())
         .then((data) => {
-        if (data.success) {
-            handleSaveButton(e);
-        } else {
-            showToastMessage("Senha incorreta. Tente novamente!", false);
-        }
-        setPassword('');
+            const success = data.success;
+            setPassword('');
+            return success;
         })
         .catch((error) => {
             console.error('Error:', error);
             setPassword('');
         });
+    };
+
+    const fileInputRef = useRef(null);
+
+    const handleButtonClick = (e) => {
+        e.preventDefault();
+        fileInputRef.current.click();
     };
 
     const handleSaveButton = async (e) => {
@@ -155,7 +170,6 @@ function Profile() {
             const result = await response.json();
         
             if (response.ok) {
-            console.log('Perfil atualizado com sucesso:', result);
             setIsEditing(false);
             setIsSaving(false);
             setFormDisabled(true); 
@@ -169,6 +183,27 @@ function Profile() {
         }
     };
       
+    const handleDeleteButton = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch(`http://127.0.0.1:5000/auth/delete/${user_id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+            });
+        
+            const result = await response.json();
+        
+            if (response.ok) {
+                navigate("/login");
+            } else {
+                showToastMessage(result.msg, false);
+            }
+        } catch (error) {
+            showToastMessage('Erro ao deletar perfil. Tente novamente.', false);
+        }
+    }
       
     useEffect(() => {
         document.body.style.backgroundColor = 'beige'; 
@@ -214,127 +249,168 @@ function Profile() {
     });
 
     return (
-        <div className="Profile">
-            <div className="side-nav">
-                <div className="link-pages">
-                    {getNavLinks().map((link) => (
-                        <button key={link.name} className="btn-page" onClick={() => handleLinkClick(link.link_page)}>
-                            <img src={link.img}></img>
-                        <p>{link.name}</p>
-                        </button>
-                    ))}
-                </div>
-            </div>
-            <form id='form-update' className="main-profile">
-                <h1>Perfil</h1>
-                <div className="profile-img-div-container" style={{ position: 'relative'}}>
-                    {profileImg ? (
-                        <img
-                        src={`data:image/jpeg;base64,${profileImg}`}
-                        alt="Profile"
-                        className="profile-img"
-                        onMouseEnter={() =>  isEditing &&setIsHovered(true)}
-                        onMouseLeave={() =>  isEditing &&setIsHovered(false)}
-                        style={{opacity: isEditing && isHovered ? 0.5 : 1, transition: 'opacity 0.2s ease-in-out', cursor: 'pointer'}}
-                        />
-                    ) : (
-                        <img
-                        src={profile_svg}
-                        alt="Profile"
-                        className="profile-icon-svg"
-                        onMouseEnter={() =>  isEditing && setIsHovered(true)}
-                        onMouseLeave={() =>  isEditing && setIsHovered(false)}
-                        style={{opacity: isEditing && isHovered ? 0.5 : 1, transition: 'opacity 0.2s ease-in-out', cursor: 'pointer'}}
-                        />
-                    )}
-                    {isHovered && (
-                        <img
-                        src={pencil_square_svg}
-                        alt="Hover Icon"
-                        style={{
-                            position: 'absolute',
-                            top: '35px',
-                            left: '35px',
-                            width: '30px',
-                            height: '30px',
-                            pointerEvents: 'none',
+<div className="Profile">
+  <div className="side-nav">
+      <div className="link-pages">
+          {getNavLinks().map((link) => (
+              <button key={link.name} className="btn-page" onClick={() => handleLinkClick(link.link_page)}>
+                  <img src={link.img}></img>
+              <p>{link.name}</p>
+              </button>
+          ))}
+      </div>
+  </div>
+  <form id='form-update' className="main-profile">
+  <h1>Perfil</h1>
+  <div className="profile-img-div-container" style={{ position: 'relative' }}>
+    {profileImg ? (
+      <img
+        onClick={handleButtonClick}
+        src={`data:image/jpeg;base64,${profileImg}`}
+        alt="Profile"
+        className="profile-img"
+        onMouseEnter={() => isEditing && setIsHovered(true)}
+        onMouseLeave={() => isEditing && setIsHovered(false)}
+        style={{ opacity: isEditing && isHovered ? 0.5 : 1, transition: 'opacity 0.2s ease-in-out', cursor: isEditing && isHovered ? 'pointer' : 'default'}}
+      />
+    ) : (
+      <img
+        src={profile_svg}
+        alt="Profile"
+        className="profile-icon-svg"
+        onMouseEnter={() => isEditing && setIsHovered(true)}
+        onMouseLeave={() => isEditing && setIsHovered(false)}
+        style={{ opacity: isEditing && isHovered ? 0.5 : 1, transition: 'opacity 0.2s ease-in-out', cursor: 'pointer' }}
+      />
+    )}
+    {isEditing && (
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        style={{display: 'none'}}
+        ref={fileInputRef}
+      />
+    )}
+    {isHovered && (
+    <img
+      src={pencil_square_svg}
+      alt="Hover Icon"
+      style={{
+        position: 'absolute',
+        top: '35px',
+        left: '35px',
+        width: '30px',
+        height: '30px',
+        pointerEvents: 'none',
+      }}
+    />
+    )}
+    <p>Foto de perfil</p>
+  </div>
+  <div className="profile-info-container">
+    <div className="profile-div-container">
+      <label htmlFor="name">Nome</label>
+      <input type="text" id="name-input" name="new_name" placeholder={user_name} disabled={formDisabled} onChange={handleInputChange} />
+    </div>
+    <div className="profile-div-container">
+      <label htmlFor="last_name">Sobrenome</label>
+      <input type="text" id="last_name-input" name="new_last_name" placeholder={lastName} disabled={formDisabled} onChange={handleInputChange} />
+    </div>
+    <div className="profile-div-container">
+      <label htmlFor="gender">Gênero</label>
+      {!isEditing ? (
+        <input type="text" placeholder={gender} disabled={formDisabled} />
+      ) : (
+        <select name="new_gender" placeholder={gender} onChange={handleInputChange}>
+          <option value="m">Masculino</option>
+          <option value="f">Feminino</option>
+          <option value="n">Não informar</option>
+        </select>
+      )}
+    </div>
+    <div className="profile-div-container">
+      <label htmlFor="email">E-mail</label>
+      <input type="email" id="email-input" name="new_email" placeholder={login} disabled={formDisabled} onChange={handleInputChange} />
+    </div>
+    <div className="container-btns">
+      {isEditing && (
+        <>
+          <button className="btn-delete" id="btn-cancel" onClick={handleCancelButton}>
+            Cancelar
+          </button>
+          <button className="btn-save" id="btn-save" onClick={handleShowSaveConfirm}>
+            Salvar
+          </button>
+        </>
+      )}
+      {!isEditing && (
+        <>
+        <button className="btn-delete" id="btn-delete" onClick={handleShowDeleteConfirm}>
+            Excluir conta
+          </button>
+          <button className="btn-edit" id="btn-edit" onClick={handleEditButton}>
+            Editar
+          </button>
+          <button className="btn-change-password" id="btn-change-password">
+            Alterar senha
+          </button>
 
-                        }}
-                        />
-                    )}
-                    <p>Foto de perfil</p>
-                </div>
-                <div className="profile-info-container">
-                        <div className="profile-div-container">
-                            <label htmlFor="name">Nome</label>
-                            <input type="text" id="name-input" name="new_name" placeholder={user_name} disabled={formDisabled} onChange={handleInputChange}></input>
-                        </div> 
-                        <div className="profile-div-container">
-                            <label htmlFor="last_name">Sobrenome</label>
-                            <input type="text" id="last_name-input" name="new_last_name" placeholder={lastName} disabled={formDisabled} onChange={handleInputChange}></input>
-                        </div>
-                        <div className="profile-div-container">
-                            <label htmlFor="gender">Gênero</label>
-                            {!isEditing ? (
-                                <input type="text" placeholder={gender} disabled={formDisabled}></input>
-                            ) : (
-                                <select name="new_gender" placeholder={gender} onChange={handleInputChange}>
-                                        <option value="m">Masculino</option>
-                                        <option value="f">Feminino</option>
-                                        <option value="n">Não informar</option>
-                                </select>
-                            )}
-                        </div>
-                        <div className="profile-div-container">
-                            <label htmlFor="email">E-mail</label>
-                            <input type="email" id="email-input" name="new_email" placeholder={login} disabled={formDisabled} onChange={handleInputChange}></input>
-                        </div>
-                        <div className="container-btns">
-                            {isEditing && (
-                                <button className="btn-delete" id="btn-cancel" onClick={handleCancelButton}>
-                                Cancelar
-                                </button>
-                            )}
-                            {isEditing && (
-                                <button className="btn-save" id="btn-save" onClick={handleShowConfirm} >
-                                Salvar
-                                </button>
-                            )}
-                            {!isEditing && (
-                                <button className="btn-delete" id="btn-delete">
-                                Excluir conta
-                                </button>
-                            )}
-                            {!isEditing && (
-                            <button className="btn-edit" id="btn-edit" onClick={handleEditButton}>
-                                Editar
-                            </button>
-                            )}
-                            {!isEditing && (
-                                <button className="btn-change-password" id="btn-change-password">
-                                Alterar senha
-                                </button>
-                            )}
-                            {isSaving && (
-                                <div className='form-confirm-password-background' onClick={handleBackgroundClick}>
-                                    <div className='form-confirm-password-container'>
-                                        <form className='form-confirm-password'>
-                                            <label htmlFor="password">Digite sua senha para confirmar as alterações</label>
-                                            <input
-                                                type="password"
-                                                value={confirm_password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                                required
-                                                />
-                                            <button onClick={handleConfirmPassword} className='btn-save'>Salvar</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                </div>
+        </>
+      )}
+      {isSaving && (
+        <div className='form-confirm-password-background' onClick={handleBackgroundClick}>
+          <div className='form-confirm-password-container'>
+            <form className='form-confirm-password'>
+              <label htmlFor="password">Digite sua senha para confirmar as alterações</label>
+              <input
+                type="password"
+                value={confirm_password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button onClick={(e) =>{
+                e.preventDefault();
+                handleConfirmPassword(e).then((result) => {
+                    result ? handleSaveButton(e) : showToastMessage("Senha incorreta! Tente novamente", result);
+                });
+              }} 
+              className='btn-save'>
+                Salvar
+              </button>
             </form>
+          </div>
         </div>
+      )}
+      {isDeleting && (
+        <div className='form-confirm-password-background' onClick={handleBackgroundClick}>
+          <div className='form-confirm-password-container'>
+            <form className='form-confirm-password'>
+              <label htmlFor="password">Digite sua senha para confirmar as alterações</label>
+              <input
+                type="password"
+                value={confirm_password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button onClick={(e) => {
+              e.preventDefault();
+              handleConfirmPassword(e).then((result) => {
+                  result ? handleDeleteButton(e) : showToastMessage("Senha incorreta! Tente novamente", result);
+              });
+            }} 
+              className='btn-save'>
+                Salvar
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</form>
+
+</div>
     )
 }
 

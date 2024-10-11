@@ -84,39 +84,40 @@ def update_user(id_to_update):
     if not user_id:
         return jsonify(msg="Operação não autorizada."), 401
     
+    # Para dados de texto (como nome, email, etc.)
     data = request.form
 
+    # Para arquivos, como a imagem de perfil
+    files = request.files
+
     print(data)
-    new_name = data['new_name'] if 'new_name' in data else None
-    new_last_name = data['new_last_name'] if 'new_last_name' in data else None
-    new_password = data['new_password'] if 'new_password' in data else None
-    new_gender = data['new_gender'] if 'new_gender' in data else None
-    new_role = data['new_role'] if 'new_role' in data else None
-    new_email = data['new_email'] if 'new_email' in data else None
-    profile_img = data['new_profile_img'] if 'new_profile_img' in data else None
+    new_name = data.get('new_name', None)
+    new_last_name = data.get('new_last_name', None)
+    new_password = data.get('new_password', None)
+    new_gender = data.get('new_gender', None)
+    new_role = data.get('new_role', None)
+    new_email = data.get('new_email', None)
+
+    # Verifica se a imagem foi enviada nos arquivos
+    profile_img = files.get('new_profile_img', None)
     profile_img_data = None
     if profile_img:
-        profile_img_data = profile_img.read() 
-        
+        profile_img_data = profile_img.read()  # Lê os dados da imagem
+    
     success, msg = database.auth.update(id_to_update, new_name, new_last_name, new_password,
                                          profile_img_data, new_gender, new_role, new_email)
+    
     return jsonify({'success': success, "msg": msg}), (200 if success else 400)
-
-
 
 @auth_bp.route('/delete/<id_to_delete>', methods=['DELETE'])
 @jwt_required()
 @cross_origin()
 def delete_user(id_to_delete):
     user_id = get_jwt_identity()
-    claims = get_jwt()
-    role = claims["role"]
     if not user_id:
         return jsonify(msg="Operação não autorizada."), 401
-    if role == "admin":
-        success, msg = database.auth.delete(id_to_delete)
-        return jsonify({"success": success, "msg": msg}), (200 if success else 400)
-    return jsonify({"success": False, "msg":"Usuário não tem permissão para realizar essa operação."}), 403
+    success, msg = database.auth.delete(id_to_delete)
+    return jsonify({"success": success, "msg": msg}), (200 if success else 400)
 
 @auth_bp.route('/confirm_password', methods=['POST'])
 @jwt_required()
@@ -125,5 +126,5 @@ def confirm_password():
     user_id = get_jwt_identity()
     data = request.json
     password = data['confirm_password']
-    success= database.auth.confirm_password(user_id, password)
+    success = database.auth.confirm_password(user_id, password)
     return jsonify(success=success), (200 if success else 401)
