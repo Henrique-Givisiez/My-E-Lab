@@ -48,6 +48,7 @@ function Profile() {
     const [isSaving, setIsSaving] = useState(false);
     const [formDisabled, setFormDisabled] = useState(true);
 
+    const [isHovered, setIsHovered] = useState(false);
     
     const handleEditButton = (e) => {
         
@@ -226,11 +227,40 @@ function Profile() {
             </div>
             <form id='form-update' className="main-profile">
                 <h1>Perfil</h1>
-                <div className="profile-img-div-container">
+                <div className="profile-img-div-container" style={{ position: 'relative'}}>
                     {profileImg ? (
-                        <img src={`data:image/jpeg;base64,${profileImg}`} alt="Profile" className="profile-img"></img>
+                        <img
+                        src={`data:image/jpeg;base64,${profileImg}`}
+                        alt="Profile"
+                        className="profile-img"
+                        onMouseEnter={() =>  isEditing &&setIsHovered(true)}
+                        onMouseLeave={() =>  isEditing &&setIsHovered(false)}
+                        style={{opacity: isEditing && isHovered ? 0.5 : 1, transition: 'opacity 0.2s ease-in-out', cursor: 'pointer'}}
+                        />
                     ) : (
-                        <img src={profile_svg} alt="Profile" className="profile-icon-svg"></img>
+                        <img
+                        src={profile_svg}
+                        alt="Profile"
+                        className="profile-icon-svg"
+                        onMouseEnter={() =>  isEditing && setIsHovered(true)}
+                        onMouseLeave={() =>  isEditing && setIsHovered(false)}
+                        style={{opacity: isEditing && isHovered ? 0.5 : 1, transition: 'opacity 0.2s ease-in-out', cursor: 'pointer'}}
+                        />
+                    )}
+                    {isHovered && (
+                        <img
+                        src={pencil_square_svg}
+                        alt="Hover Icon"
+                        style={{
+                            position: 'absolute',
+                            top: '35px',
+                            left: '35px',
+                            width: '30px',
+                            height: '30px',
+                            pointerEvents: 'none',
+
+                        }}
+                        />
                     )}
                     <p>Foto de perfil</p>
                 </div>
