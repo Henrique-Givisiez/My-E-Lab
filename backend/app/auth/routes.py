@@ -90,7 +90,6 @@ def update_user(id_to_update):
     # Para arquivos, como a imagem de perfil
     files = request.files
 
-    print(data)
     new_name = data.get('new_name', None)
     new_last_name = data.get('new_last_name', None)
     new_password = data.get('new_password', None)
@@ -128,3 +127,19 @@ def confirm_password():
     password = data['confirm_password']
     success = database.auth.confirm_password(user_id, password)
     return jsonify(success=success), (200 if success else 401)
+
+@auth_bp.route('/change_password', methods=['POST'])
+@jwt_required()
+@cross_origin()
+def change_password():
+    user_id = get_jwt_identity()
+    data = request.form
+    old_password = data['old_password']
+    new_password = data['new_password']
+    check_password = database.auth.confirm_password(user_id, old_password)
+    if check_password:
+        success, msg = database.auth.update(user_id, new_password=new_password)
+    else:
+        success = False
+        msg = "Senha atual incorreta."
+    return jsonify({"success": success, "msg": msg}), (200 if success else 401)

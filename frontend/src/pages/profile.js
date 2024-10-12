@@ -27,6 +27,9 @@ function Profile() {
     
     const [userRole, setUserRole] = useState(current_role_user);
     
+
+    const [changePassword, setChangePassword] = useState(false);
+
     const getNavLinks = () => {
         const links = [
             { name: "Perfil", roles: ["estudante", "professor", "admin"], img: profile_svg, link_page: "profile" },
@@ -63,6 +66,14 @@ function Profile() {
         }
     };
 
+    const handleChangePassword = (e) => {
+        e.preventDefault();
+        if (!changePassword) {
+            setChangePassword(true);
+        } else {
+            setChangePassword(false);
+        }
+    };
     
     const handleCancelButton = (e) => {
         e.preventDefault();
@@ -76,7 +87,8 @@ function Profile() {
         new_gender: '',
         new_role: '',
         new_email: '',
-        new_profile_img: ''
+        new_profile_img: '',
+        new_password: '',
     });
     
     const handleInputChange = (e) => {
@@ -119,6 +131,8 @@ function Profile() {
     const handleBackgroundClick = (e) => {
         if (e.target.className === 'form-confirm-password-background') {
             setIsSaving(false);
+            setIsDeleting(false);
+            setChangePassword(false);
         }
     };
     
@@ -204,6 +218,60 @@ function Profile() {
             showToastMessage('Erro ao deletar perfil. Tente novamente.', false);
         }
     }
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const [passwordsMatch, setPasswordsMatch] = useState(true);
+  
+    const handleNewPasswordChange = (e) => {
+      setNewPassword(e.target.value);
+      checkPasswords(e.target.value, confirmNewPassword);
+    };
+  
+    const handleConfirmNewPasswordChange = (e) => {
+      setConfirmNewPassword(e.target.value);
+      checkPasswords(newPassword, e.target.value);
+    };
+  
+    const checkPasswords = (password1, password2) => {
+      setPasswordsMatch(password1 === password2);
+    };
+  
+    const handleFormChangePassword = async (e) => {
+        e.preventDefault();
+        if (passwordsMatch) {
+            try {
+                const formData = new FormData();
+                formData.append('old_password', oldPassword);
+                formData.append('new_password', newPassword);
+                const response = await fetch(`http://127.0.0.1:5000/auth/change_password`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData,
+                });
+    
+                const result = await response.json();
+                if (response.ok) {
+                    setIsEditing(false);
+                    setIsSaving(false);
+                    setFormDisabled(true); 
+                    showToastMessage(result.msg, true); 
+                    setOldPassword('');
+                    setNewPassword('');
+                    setConfirmNewPassword('');
+                    } else {
+                    showToastMessage(result.msg, false);
+                    }
+                } catch (error) {
+                    console.error('Erro ao atualizar senha:', error);
+                    showToastMessage(error, false);
+                }
+
+    } else {
+        showToastMessage('As senhas não coincidem', false);
+    }};
       
     useEffect(() => {
         document.body.style.backgroundColor = 'beige'; 
@@ -352,7 +420,7 @@ function Profile() {
           <button className="btn-edit" id="btn-edit" onClick={handleEditButton}>
             Editar
           </button>
-          <button className="btn-change-password" id="btn-change-password">
+          <button className="btn-change-password" id="btn-change-password" onClick={handleChangePassword}>
             Alterar senha
           </button>
 
@@ -406,6 +474,38 @@ function Profile() {
           </div>
         </div>
       )}
+      {changePassword && (
+        <div className='form-confirm-password-background' onClick={handleBackgroundClick}>
+          <div className='form-confirm-password-container'>
+            <form className='form-confirm-password'>
+              <label htmlFor="oldPassword">Digite a senha antiga</label>
+              <input
+                type="password"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                required
+              />
+              <label htmlFor="newPassword">Digite a nova senha</label>
+                <input
+                    type="password"
+                    value={newPassword}
+                    onChange={handleNewPasswordChange}
+                    required
+                />
+                <label htmlFor="confirm_new_password">Confirme a nova senha</label>
+                <input
+                    type="password"
+                    value={confirmNewPassword}
+                    onChange={handleConfirmNewPasswordChange}
+                    required
+                />
+                {!passwordsMatch && <p style={{ color: 'red' }}>As senhas não coincidem</p>}
+              <button className='btn-save' onClick={handleFormChangePassword}>Salvar</button>
+            </form>
+          </div>
+        </div>
+      )
+      }
     </div>
   </div>
 </form>

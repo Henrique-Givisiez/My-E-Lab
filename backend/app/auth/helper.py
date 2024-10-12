@@ -120,7 +120,8 @@ class AuthHelper(BaseHelper):
             print(f"ERROR: {err}")
             return None
          
-    def update(self, user_id: int, new_name: str, new_last_name: str, new_password: str, new_profile_img: bytes, new_gender: str, new_role: str, new_email: str) -> tuple[bool, str]:
+    def update(self, user_id: int, new_name: str = None, new_last_name: str = None, new_password: str = None, 
+               new_profile_img: bytes = None, new_gender: str = None, new_role: str = None, new_email: str = None) -> tuple[bool, str]:
         fields_to_update = []
         args = []
         msg = ""
