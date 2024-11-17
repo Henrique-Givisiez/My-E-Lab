@@ -79,6 +79,7 @@ function Profile() {
         e.preventDefault();
         setIsEditing(false);
         setFormDisabled(true);
+        setNewImg(null);
     };
     
     const [formData, setFormData] = useState({
@@ -98,10 +99,16 @@ function Profile() {
             [name]: value,
         });
     };
+
     
+    const [newImg, setNewImg] = useState(null);
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-    
+        if (file) {
+          const imageURL = URL.createObjectURL(file); 
+          setNewImg(imageURL); 
+          setProfileImg(null);
+        }
           setFormData({
             ...formData,
             new_profile_img: file,
@@ -161,8 +168,10 @@ function Profile() {
     const fileInputRef = useRef(null);
 
     const handleButtonClick = (e) => {
+      if (isEditing){
         e.preventDefault();
         fileInputRef.current.click();
+      }
     };
 
     const handleSaveButton = async (e) => {
@@ -308,7 +317,10 @@ function Profile() {
                 setLastName(last_name);
                 setRole(role);
                 setGender(gender);
+                if (!newImg) {
                 setProfileImg(profile_img);
+                }
+
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -331,26 +343,48 @@ function Profile() {
   <form id='form-update' className="main-profile">
   <h1>Perfil</h1>
   <div className="profile-img-div-container" style={{ position: 'relative' }}>
-    {profileImg ? (
-      <img
-        onClick={handleButtonClick}
-        src={`data:image/jpeg;base64,${profileImg}`}
-        alt="Profile"
-        className="profile-img"
-        onMouseEnter={() => isEditing && setIsHovered(true)}
-        onMouseLeave={() => isEditing && setIsHovered(false)}
-        style={{ opacity: isEditing && isHovered ? 0.5 : 1, transition: 'opacity 0.2s ease-in-out', cursor: isEditing && isHovered ? 'pointer' : 'default'}}
-      />
-    ) : (
-      <img
-        src={profile_svg}
-        alt="Profile"
-        className="profile-icon-svg"
-        onMouseEnter={() => isEditing && setIsHovered(true)}
-        onMouseLeave={() => isEditing && setIsHovered(false)}
-        style={{ opacity: isEditing && isHovered ? 0.5 : 1, transition: 'opacity 0.2s ease-in-out', cursor: 'pointer' }}
-      />
-    )}
+{profileImg ? (
+  <img
+    onClick={handleButtonClick}
+    src={`data:image/jpeg;base64,${profileImg}`}
+    alt="Profile"
+    className="profile-img"
+    onMouseEnter={() => isEditing && setIsHovered(true)}
+    onMouseLeave={() => isEditing && setIsHovered(false)}
+    style={{
+      opacity: isEditing && isHovered ? 0.5 : 1,
+      cursor: isEditing && isHovered ? "pointer" : "default",
+    }}
+  />
+) : newImg ? (
+  <img
+    onClick={handleButtonClick}
+    src={newImg}
+    alt="Profile"
+    className="profile-img"
+    onMouseEnter={() => isEditing && setIsHovered(true)}
+    onMouseLeave={() => isEditing && setIsHovered(false)}
+    style={{
+      opacity: isEditing && isHovered ? 0.5 : 1,
+      cursor: isEditing && isHovered ? "pointer" : "default",
+    }}
+  />
+) : (
+  <img
+    onClick={handleButtonClick}
+    src={profile_svg}
+    alt="Profile Icon"
+    className="profile-icon-svg"
+    onMouseEnter={() => isEditing && setIsHovered(true)}
+    onMouseLeave={() => isEditing && setIsHovered(false)}
+    style={{
+      opacity: isEditing && isHovered ? 0.5 : 1,
+      cursor: "pointer",
+    }}
+  />
+)}
+
+
     {isEditing && (
       <input
         type="file"

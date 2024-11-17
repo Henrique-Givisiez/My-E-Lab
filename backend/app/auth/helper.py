@@ -102,10 +102,13 @@ class AuthHelper(BaseHelper):
         try:
             self.cursor.execute(select_all_users_query)
             users_data = list(self.cursor.fetchall())
+            users_data = [list(user) for user in users_data]
             for user in users_data:
                 user[3] = user[3].capitalize()
                 user[4] = user[4].capitalize()
                 user[5] = user[5].capitalize()
+                if user[5].startswith("A"):
+                    user[5] = "Administrador"
                 if user[6] == "m":
                     user[6] = "Masculino"
                 elif user[6] == "f":
@@ -114,6 +117,15 @@ class AuthHelper(BaseHelper):
                     user[6] = "Não informado"
                 if user[-1]:
                     user[-1] = base64.b64encode(user[-1]).decode('utf-8')
+            users_data.sort(key=lambda x: x[3])
+            for ind in range(len(users_data)):
+                users_data[ind] = {
+                    "Email": users_data[ind][1],
+                    "Nome_Sobrenome": users_data[ind][3] + " " + users_data[ind][4],
+                    "Funcao": users_data[ind][5],
+                    "Genero": users_data[ind][6],
+                    "Imagem_perfil": users_data[ind][-1]
+                }
             return users_data
         
         except Exception as err:

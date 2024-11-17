@@ -5,6 +5,7 @@ import Signup from './pages/signup'
 import Login from './pages/login'
 import Loans from './pages/loans'
 import Profile from './pages/profile'
+import Users from './pages/users'
 import reportWebVitals from './reportWebVitals';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -19,6 +20,7 @@ root.render(
       <Route path="/login" element={<Login /> } />
       <Route path='/loans' element={<Loans />} />
       <Route path='/profile' element={<Profile />} />
+      <Route path='/users' element={<Users />} />
     </Routes>
   </Router>
 );
