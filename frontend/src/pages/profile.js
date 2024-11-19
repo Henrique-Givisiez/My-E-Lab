@@ -379,7 +379,7 @@ function Profile() {
     onMouseLeave={() => isEditing && setIsHovered(false)}
     style={{
       opacity: isEditing && isHovered ? 0.5 : 1,
-      cursor: "pointer",
+      cursor: isEditing && isHovered ? "pointer" : "default",
     }}
   />
 )}
