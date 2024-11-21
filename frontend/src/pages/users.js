@@ -16,6 +16,7 @@ function Users() {
     const decodedToken = jwtDecode(token);
     const location = useLocation();
     const message = location.state?.message;
+    const success = location.state?.success;
     const [users, setUsers] = useState({ data: [] });
     const navigate = useNavigate();
     const role = decodedToken.role;

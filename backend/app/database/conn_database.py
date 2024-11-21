@@ -4,7 +4,6 @@ from auth.helper import AuthHelper
 from books.helper import BooksHelper
 from loans.helper import LoansHelper
 from materials.helper import MaterialsHelper
-from items.helper import ItemsHelper
 
 def get_db_connection():
     connection = pymysql.connect(
@@ -24,7 +23,6 @@ class Database:
         self.books = BooksHelper(self.connection, self.cursor)
         self.loans = LoansHelper(self.connection, self.cursor)
         self.materials = MaterialsHelper(self.connection, self.cursor)
-        self.items = ItemsHelper(self.connection, self.cursor)
 
     def close(self):
         self.connection.close()

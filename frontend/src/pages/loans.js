@@ -16,8 +16,7 @@ function Loans() {
     const decodedToken = jwtDecode(token);
     const location = useLocation();
     const message = location.state?.message;
-    const login = location.state?.login;
-    const user_id = location.state?.user_id;
+    const success = location.state?.success;
     const [loans, setLoans] = useState([]);
     const navigate = useNavigate();
     const role = decodedToken.role;
@@ -44,7 +43,7 @@ function Loans() {
 
     useEffect(() => {
         if (message !== undefined) {
-            showToastMessage(message);  
+            showToastMessage(message, success);  
         }
     }, [message]); 
     

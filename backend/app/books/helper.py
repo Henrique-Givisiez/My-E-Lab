@@ -6,9 +6,11 @@ class BooksHelper(BaseHelper):
                category: str, date: str, author: str, location: str, book_cover: bytes = None) -> tuple[bool, str]:
         msg = ""
         if ISBN and title and description and category and date and author and location:
+            if len(ISBN) != 13:
+                msg = "ISBN inválido!"
+                return False, msg
+            
             tipo_item = "livro"
-            data_obj = datetime.strptime(date, "%d/%m/%Y")
-            data_formatada = data_obj.strftime("%Y-%m-%d")
             insert_book_query = """
             INSERT INTO Livro (ISBN, Titulo, Descricao, Categoria, Data_aquisicao, Autor, Localizacao, Book_cover)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
@@ -16,7 +18,7 @@ class BooksHelper(BaseHelper):
             insert_item_query = "INSERT INTO Item (Id, Tipo_item) VALUES (%s, %s)"
             try:
                 self.cursor.execute(insert_item_query, (ISBN, tipo_item))
-                self.cursor.execute(insert_book_query, (ISBN, title, description, category, data_formatada, author, location, book_cover))
+                self.cursor.execute(insert_book_query, (ISBN, title, description, category, date, author, location, book_cover))
                 self.conn.commit()
                 msg = "Livro cadastrado com sucesso!"
                 return True, msg

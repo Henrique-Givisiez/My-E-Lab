@@ -31,7 +31,6 @@ function Login(){
         });
     };
     useEffect(() => {
-        // document.body.style.backgroundColor = 'beige'; 
         document.body.style.fontFamily = '"Poppins", sans-serif';
         return () => {
             document.body.style.backgroundColor = '';
@@ -58,17 +57,7 @@ function Login(){
                 sessionStorage.setItem("access_token", token);
                 const decodedToken = jwtDecode(token);
                 if (decodedToken) {
-                    const role = decodedToken.role;
-                    const email = decodedToken.email;
-                    const user_id = decodedToken.sub;
-                    const user_name = decodedToken.name;
-                    navigate("/loans", { state: {
-                        message: result.msg
-                        , role: role
-                        , email: email
-                        , user_id: user_id
-                        , user_name: user_name
-                    } });
+                    navigate("/loans", { state: {message: result.msg, success: true} });
                 } 
             } else {
                 showToastMessage(result.msg, result.access_token);

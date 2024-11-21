@@ -6,6 +6,9 @@ class MaterialsHelper(BaseHelper):
                category: str, date: str, location: str, material_img: bytes = None) -> tuple[bool, str]:
         msg = ""
         if serial_number and name and description and category and date and location:
+            if len(serial_number) != 10:
+                msg = "Número de série inválido!"
+                return False, msg
             tipo_item = "material"
             data_obj = datetime.strptime(date, "%d/%m/%Y")
             data_formatada = data_obj.strftime("%Y-%m-%d")
