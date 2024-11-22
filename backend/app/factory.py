@@ -2,6 +2,7 @@ from flask import Flask, g
 from flask_jwt_extended import JWTManager
 from database.conn_database import Database
 from flask_cors import CORS
+from auth.auth import jwt
 
 database = Database()
 
@@ -16,7 +17,7 @@ def create_app():
     app.config['MYSQL_DB'] = 'bd2023'
     app.config['SECRET_KEY'] = "secret_key"
     app.config['JWT_SECRET_KEY'] = 'secret_key'
-    jwt = JWTManager(app)
+    jwt.init_app(app)
     
     @app.before_request
     def before_request():

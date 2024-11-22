@@ -83,7 +83,7 @@ function Register() {
         }
 
                 
-        fetch("http://127.0.0.1:5000/items/register", {
+        fetch("http://127.0.0.1:5000/auth/token-valid", {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,

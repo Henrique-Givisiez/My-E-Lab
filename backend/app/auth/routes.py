@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from factory import database
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from flask_cors import cross_origin
+from .auth import block_token
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -45,6 +46,13 @@ def login():
         jwt_token = False
         msg = "Campos incompletos."
     return jsonify({"access_token": jwt_token, "msg": msg}), (200 if jwt_token else 401)
+
+@auth_bp.route('/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]
+    block_token(jti)
+    return "", 204
 
 @auth_bp.route('/all-users', methods=['GET'])
 @jwt_required()
@@ -143,3 +151,11 @@ def change_password():
         success = False
         msg = "Senha atual incorreta."
     return jsonify({"success": success, "msg": msg}), (200 if success else 401)
+
+@auth_bp.route('/token-valid', methods=['GET'])
+@jwt_required()
+@cross_origin()
+def token_valid():
+    user_id = get_jwt_identity()
+    if not user_id:
+        return jsonify({"success": False, "msg":"Operação não autorizada."}), 401

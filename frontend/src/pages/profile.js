@@ -245,6 +245,24 @@ function Profile() {
     const checkPasswords = (password1, password2) => {
       setPasswordsMatch(password1 === password2);
     };
+
+    const handleLogoutButton = async (e) => {
+      e.preventDefault();
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/auth/logout`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+        });
+    
+        if (response.status == 204) {
+            navigate("/login");
+        }
+    } catch (error) {
+        showToastMessage('Erro ao sair da conta. Tente novamente.', false);
+    }
+    }
   
     const handleFormChangePassword = async (e) => {
         e.preventDefault();
@@ -448,7 +466,10 @@ function Profile() {
       )}
       {!isEditing && (
         <>
-        <button className="btn-delete" id="btn-delete" onClick={handleShowDeleteConfirm}>
+          <button className="btn-delete" id="btn-delete" onClick={handleLogoutButton} style={{marginRight:"10px"}}>
+            Logout
+          </button>
+          <button className="btn-delete" id="btn-delete" onClick={handleShowDeleteConfirm}>
             Excluir conta
           </button>
           <button className="btn-edit" id="btn-edit" onClick={handleEditButton}>
@@ -457,7 +478,6 @@ function Profile() {
           <button className="btn-change-password" id="btn-change-password" onClick={handleChangePassword}>
             Alterar senha
           </button>
-
         </>
       )}
       {isSaving && (

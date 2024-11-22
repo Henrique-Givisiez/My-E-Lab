@@ -70,6 +70,9 @@ function Loans() {
             }
         })
         .then(response => {
+            if (response.status == 401) {
+                navigate("/login", {state: {message: "Sessão expirada. Faça login novamente.", success: false}});
+            }
             if (!response.ok) {
                 throw new Error('Erro na requisição, status: ' + response.status);
             }
