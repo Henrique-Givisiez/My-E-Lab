@@ -48,9 +48,22 @@ class BooksHelper(BaseHelper):
         try:
             self.cursor.execute(select_all_books_query, ())
             all_books = list(map(list, self.cursor.fetchall()))
-            for ind, uri in enumerate(all_books):
-                all_books[ind][-1] = uri[-1].decode('utf-8')
 
+            for book in all_books:
+                book[1]  = book[1].capitalize()
+                book[3]  = book[3].capitalize()
+                book[5]  = book[5].capitalize()
+                book[-1] = book[-1].decode('utf-8')
+
+            all_books.sort(key=lambda x: x[1])
+            for ind in range(len(all_books)):
+                all_books[ind] = {
+                    "titulo": all_books[ind][1],
+                    "categoria": all_books[ind][3],
+                    "autor": all_books[ind][5],
+                    "book_cover": all_books[ind][-1],
+                    "type": "book"
+                }
             return all_books
         
         except Exception as err:

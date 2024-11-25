@@ -49,8 +49,21 @@ class MaterialsHelper(BaseHelper):
         try:
             self.cursor.execute(select_all_materials_query, ())
             all_materials = list(map(list, self.cursor.fetchall()))
-            for ind, uri in enumerate(all_materials):
-                all_materials[ind][-1] = uri[-1].decode('utf-8')
+
+            for book in all_materials:
+                book[1]  = book[1].capitalize()
+                book[3]  = book[3].capitalize()
+                book[5]  = book[5].capitalize()
+                book[-1] = book[-1].decode('utf-8')
+
+            all_materials.sort(key=lambda x: x[1])
+            for ind in range(len(all_materials)):
+                all_materials[ind] = {
+                    "nome": all_materials[ind][1],
+                    "categoria": all_materials[ind][3],
+                    "book_cover": all_materials[ind][-1],
+                    "type": "material"
+                }
 
             return all_materials
         
