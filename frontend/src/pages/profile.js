@@ -1,52 +1,22 @@
-import React, { useEffect,  useState, useRef     } from 'react';
+import React, { useEffect,  useState, useRef } from 'react';
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import '../assets/styles/profile.css';
-import profile_svg from '../assets/images/profile-icon.svg';
-import card_list_svg from '../assets/images/card-list.svg';
-import search_svg from '../assets/images/search-icon.svg';
-import register_svg from '../assets/images/register-icon.svg';
-import users_svg from '../assets/images/users-icon.svg';
-import dev_svg from '../assets/images/dev-icon.svg';
-import pencil_square_svg from '../assets/images/pencil-square.svg';
-
+import SideBar from '../components/side_bar';
 import showToastMessage from '../components/toast_message';
+
 function Profile() {
     const navigate = useNavigate();
     const token = sessionStorage.getItem("access_token");
     const decodedToken = jwtDecode(token);
     const user_id = decodedToken.sub;
-    const current_role_user = decodedToken.role;
-    
     const [login, setLogin] = useState('');
     const [user_name, setName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [role, setRole] = useState('');
     const [gender, setGender] = useState('');
     const [profileImg, setProfileImg] = useState('');
     
-    const [userRole, setUserRole] = useState(current_role_user);
-    
-
     const [changePassword, setChangePassword] = useState(false);
-
-    const getNavLinks = () => {
-        const links = [
-            { name: "Perfil", roles: ["estudante", "professor", "admin"], img: profile_svg, link_page: "profile" },
-            { name: "Empréstimos", roles: ["estudante", "professor", "admin"], img: card_list_svg, link_page: "loans" },
-            { name: "Consulta", roles: ["estudante", "professor", "admin"], img: search_svg, link_page: "search" },
-            { name: "Cadastro", roles: ["professor", "admin"], img: register_svg, link_page: "register" },
-            { name: "Usuários", roles: ["admin"], img: users_svg, link_page: "users" },
-            { name: "Criador", roles: ["estudante", "professor", "admin"], img: dev_svg, link_page: "dev" },
-        ];
-        
-        return links.filter(link => link.roles.includes(userRole));
-    };
-    
-    const handleLinkClick = (link_page) => {
-        navigate(`/${link_page}`);
-    }
-    
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [formDisabled, setFormDisabled] = useState(true);
@@ -348,16 +318,7 @@ function Profile() {
 
     return (
 <div className="Profile">
-  <div className="side-nav">
-      <div className="link-pages">
-          {getNavLinks().map((link) => (
-              <button key={link.name} className="btn-page" onClick={() => handleLinkClick(link.link_page)}>
-                  <img src={link.img}></img>
-              <p>{link.name}</p>
-              </button>
-          ))}
-      </div>
-  </div>
+  <SideBar />
   <form id='form-update' className="main-profile">
   <h1>Perfil</h1>
   <div className="profile-img-div-container" style={{ position: 'relative' }}>

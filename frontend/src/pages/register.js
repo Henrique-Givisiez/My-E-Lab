@@ -1,26 +1,16 @@
 import "../assets/styles/register.css";
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import showToastMessage from '../components/toast_message';
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import profile_svg from '../assets/images/profile-icon.svg';
-import card_list_svg from '../assets/images/card-list.svg';
-import search_svg from '../assets/images/search-icon.svg';
-import register_svg from '../assets/images/register-icon.svg';
-import users_svg from '../assets/images/users-icon.svg';
-import dev_svg from '../assets/images/dev-icon.svg';
 import upload_svg from '../assets/images/upload.svg'
-import { jwtDecode } from "jwt-decode";
+import SideBar from "../components/side_bar";
 
 function Register() {
     const token = sessionStorage.getItem("access_token");
-    const decodedToken = jwtDecode(token);
     const location = useLocation();
     const message = location.state?.message;
-    const success = location.state?.success;
     const navigate = useNavigate();
-    const role = decodedToken.role;
-    const [userRole, setUserRole] = useState(role);
     const [bookContainer, setBookContainer] = useState(true);
     const [bookFormData, setBookFormData] = useState({
         item_type: 'book',
@@ -43,23 +33,6 @@ function Register() {
         location: '',
         img: null
     });
-
-    const getNavLinks = () => {
-        const links = [
-            { name: "Perfil", roles: ["estudante", "professor", "admin"], img: profile_svg, link_page: "profile" },
-            { name: "Empréstimos", roles: ["estudante", "professor", "admin"], img: card_list_svg, link_page: "loans" },
-            { name: "Consulta", roles: ["estudante", "professor", "admin"], img: search_svg, link_page: "search" },
-            { name: "Cadastro", roles: ["professor", "admin"], img: register_svg, link_page: "register" },
-            { name: "Usuários", roles: ["admin"], img: users_svg, link_page: "users" },
-            { name: "Criador", roles: ["estudante", "professor", "admin"], img: dev_svg, link_page: "dev" },
-        ];
-    
-        return links.filter(link => link.roles.includes(userRole));
-    };
-    
-    const handleLinkClick = (link_page) => {
-        navigate(`/${link_page}`);
-    }
 
     useEffect(() => {
         if (message !== undefined) {
@@ -177,16 +150,7 @@ function Register() {
     return (
 
         <div className="register">
-            <div className="side-nav">
-                <div className="link-pages">
-                    {getNavLinks().map((link) => (
-                        <button key={link.name} className="btn-page" onClick={() => handleLinkClick(link.link_page)}>
-                            <img src={link.img}></img>
-                        <p>{link.name}</p>
-                        </button>
-                    ))}
-                </div>
-            </div>
+            <SideBar />
             <div className="main-register">
                 <h1 style={{marginLeft:'15px'}}>Cadastrar item</h1>
                 {bookContainer ? (

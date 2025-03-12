@@ -45,12 +45,24 @@ class AuthHelper(BaseHelper):
             return False, str(err)
 
     # Método que irá ler um usuário no banco de dados com base na coluna Id (identificador do usuário)
-    def read(self, user_id: int = None) -> list | None:
+    def read(self, user_id: int = None, email: str = None) -> list | None:
 
         # Dicionários auxiliares para mapear os valores retornados no banco de dados
         role_dict = {"admin": "Administrador", "estudante": "Estudante", "professor": "Professor"}
         gender_dict = {"m": "Masculino", "f": "Feminino", "n": "Não informado"}
 
+        if email:
+            # Comando SQL para ler usuário da tabela "Usuario" com base na coluna "Email"
+            select_user_query = "SELECT * FROM Usuario WHERE Email = %s"
+
+            try:
+                self.cursor.execute(select_user_query, (email,))
+                user_data = list(self.cursor.fetchone())
+                return user_data if user_data else None
+            except Exception as err:
+                print(f"ERROR: {err}")
+                return None
+            
         # Verifica a existência do Id
         if user_id:
             # Comando SQL para ler usuário da tabela "Usuario" com base na coluna "Id"

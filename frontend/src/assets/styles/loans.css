@@ -4,60 +4,6 @@
     height: 100vh;
     overflow: hidden;
 }
-.side-nav{
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    position: fixed;
-    z-index: 1;
-    width: 100px;
-    top: 0;
-    left: 0;
-    background-color: #ac6b3f;
-    overflow-x: hidden;
-    align-items: center;
-    transition: 0.5s;
-    padding: 3px;
-}
-
-.link-pages{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    font-size: 13px;
-    height: 100%;
-}
-
-.btn-page{
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-    background-color: transparent;
-    border: 0;
-    cursor: pointer;
-    width: 100%;
-    border-radius: 10px;
-    transition: 0.3s;
-    padding: 5px;
-}
-
-.btn-page:hover{
-    background-color: #612c095e;
-}
-.btn-page img{
-    width: 20px;
-    height: 20px;
-    filter: invert(100%);
-}
-
-.btn-page p{
-    text-decoration: none;
-    color: #F6F1E6;
-    font-size: 16px;
-    margin-bottom: 0;
-}
 
 .main-loans{
     margin-top: 0;
