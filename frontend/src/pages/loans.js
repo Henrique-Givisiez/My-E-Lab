@@ -48,8 +48,8 @@ function Loans() {
             if (response.status == 401) {
                 navigate("/login", {state: {message: "Sessão expirada. Faça login novamente.", success: false}});
             }
-            if (!response.ok) {
-                throw new Error('Erro na requisição, status: ' + response.status);
+            if (response.status == 404) {
+                setLoans([]);
             }
             return response.json();
         })
@@ -111,7 +111,7 @@ function Loans() {
                     </tr>
                 </thead>
                 <tbody>
-                    {loans.map((loans) => (
+                {loans.length >= 0 ? (loans.map((loans) => (
                         <tr key={loans.Id_emprestimo}>
                             <td>{loans.nome_titulo}</td>
                             <td>{loans.tipo_item}</td>
@@ -119,7 +119,11 @@ function Loans() {
                             <td>{loans.Data_Devolucao}</td>
                             <td><button id={`returnBtn-${loans.Id_emprestimo}`} onClick={() => returnLoan(loans.Id_emprestimo)} disabled={loans.Status_atual === "finalizado"} className={loans.Status_atual === "emprestado" ? "btn-devolver" : "btn-devolvido"}>{loans.Status_atual === "emprestado" ? "Devolver" : "Finalizado"}</button></td>
                         </tr>
-                    ))}
+                    ))) : (
+                        <tr>
+                            <td colSpan="5">Nenhum empréstimo encontrado</td>
+                        </tr>
+                    )}
                 </tbody>
             </table>
             </div>

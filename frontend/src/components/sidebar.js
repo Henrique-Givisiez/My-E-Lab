@@ -6,6 +6,7 @@ import users_svg from '../assets/images/users-icon.svg';
 import dev_svg from '../assets/images/dev-icon.svg';
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import "../assets/styles/sidebar.css";
 
 function SideBar () {

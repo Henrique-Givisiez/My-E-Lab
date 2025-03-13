@@ -52,17 +52,17 @@ class BooksHelper(BaseHelper):
             for book in all_books:
                 book[1]  = book[1].capitalize()
                 book[3]  = book[3].capitalize()
-                book[5]  = book[5].capitalize()
-                book[-1] = book[-1].decode('utf-8')
+                book[-1] = book[-1].decode('utf-8') if book[-1] else None
 
             all_books.sort(key=lambda x: x[1])
             for ind in range(len(all_books)):
                 all_books[ind] = {
-                    "titulo": all_books[ind][1],
+                    "id": all_books[ind][0],
+                    "nome": all_books[ind][1],
                     "categoria": all_books[ind][3],
-                    "autor": all_books[ind][5],
-                    "book_cover": all_books[ind][-1],
-                    "type": "book"
+                    "localizacao": all_books[ind][6],
+                    "imagem": all_books[ind][-1],
+                    "type": "Livro"
                 }
             return all_books
         

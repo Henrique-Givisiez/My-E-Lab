@@ -44,7 +44,7 @@ def read_user_loans():
     # Lê todos os empréstimos de usuário no banco de dados    
     user_loans = database.loans.read_user_loans(user_id)
     # Resposta da requisição
-    return jsonify(user_loans) if user_loans else ({'msg': 'Usuário inválido.'}, 404)
+    return jsonify(user_loans) if user_loans else ({'msg': 'Sem empréstimos.'}, 404)
 
 # Verifica o status do empréstimo
 @loans_bp.route('/check-status/<loan_id>', methods=['GET'])

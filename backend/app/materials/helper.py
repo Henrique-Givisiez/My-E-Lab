@@ -10,16 +10,14 @@ class MaterialsHelper(BaseHelper):
                 msg = "Número de série inválido!"
                 return False, msg
             tipo_item = "material"
-            data_obj = datetime.strptime(date, "%d/%m/%Y")
-            data_formatada = data_obj.strftime("%Y-%m-%d")
             insert_material_query = """
-            INSERT INTO Material_didatico (Numero_serie, Nome, Descricao, Categoria, Data_aquisicao, Localizacao, URI)
+            INSERT INTO Material_Didatico (Numero_serie, Nome, Descricao, Categoria, Data_aquisicao, Localizacao, MATERIAL_COVER)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
             """
             insert_item_query = "INSERT INTO Item (Id, Tipo_item) VALUES (%s, %s)"
             try:
                 self.cursor.execute(insert_item_query, (serial_number, tipo_item))
-                self.cursor.execute(insert_material_query, (serial_number, name, description, category, data_formatada, location, material_img))
+                self.cursor.execute(insert_material_query, (serial_number, name, description, category, date, location, material_img))
                 self.conn.commit()
                 msg = "Material cadastrado com sucesso!"
                 return True, msg
@@ -32,12 +30,12 @@ class MaterialsHelper(BaseHelper):
             return False, msg
         
     def read(self, serial_number: str) -> list | None:
-        select_material_query = "SELECT * FROM Material_didatico WHERE numero_serie = %s"
+        select_material_query = "SELECT * FROM Material_Didatico WHERE numero_serie = %s"
         try:
             self.cursor.execute(select_material_query, (serial_number, ))
-            book_data = list(self.cursor.fetchone())
-            book_data[-1] = book_data[-1].decode('utf-8')
-            return book_data
+            material_data = list(self.cursor.fetchone())
+            material_data[-1] = material_data[-1].decode('utf-8')
+            return material_data
         
         except Exception as err:
             print(f"ERROR: {err}")
@@ -45,24 +43,25 @@ class MaterialsHelper(BaseHelper):
 
 
     def read_all_materials(self) -> list | None:
-        select_all_materials_query = "SELECT * FROM Material_didatico"
+        select_all_materials_query = "SELECT * FROM Material_Didatico"
         try:
             self.cursor.execute(select_all_materials_query, ())
             all_materials = list(map(list, self.cursor.fetchall()))
 
-            for book in all_materials:
-                book[1]  = book[1].capitalize()
-                book[3]  = book[3].capitalize()
-                book[5]  = book[5].capitalize()
-                book[-1] = book[-1].decode('utf-8')
+            for material in all_materials:
+                material[1]  = material[1].capitalize()
+                material[3]  = material[3].capitalize()
+                material[-1] = material[-1].decode('utf-8') if material[-1] else None
 
             all_materials.sort(key=lambda x: x[1])
             for ind in range(len(all_materials)):
                 all_materials[ind] = {
+                    "id": all_materials[ind][0],
                     "nome": all_materials[ind][1],
                     "categoria": all_materials[ind][3],
-                    "book_cover": all_materials[ind][-1],
-                    "type": "material"
+                    "localizacao": all_materials[ind][5],
+                    "imagem": all_materials[ind][-1],
+                    "type": "Material"
                 }
 
             return all_materials

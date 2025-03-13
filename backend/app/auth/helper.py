@@ -253,7 +253,7 @@ class AuthHelper(BaseHelper):
                         expires = timedelta(minutes=30)
 
                         # Token JWT de autenticação
-                        access_token = create_access_token(identity = user_id, additional_claims = add_claims, expires_delta=expires)
+                        access_token = create_access_token(identity = str(user_id), additional_claims = add_claims, expires_delta=expires)
                         msg = f"Bem-vindo(a), {name}!"
                         return access_token, msg
 

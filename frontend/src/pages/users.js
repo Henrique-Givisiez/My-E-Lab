@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import showToastMessage from '../components/toast_message';
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import SideBar from '../components/side_bar';
-
+import SideBar from '../components/sidebar';
+import profile_svg from '../assets/images/profile-icon.svg';
 function Users() {
     const location = useLocation();
     const message = location.state?.message;

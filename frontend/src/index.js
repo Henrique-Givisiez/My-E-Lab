@@ -7,6 +7,7 @@ import Loans from './pages/loans'
 import Profile from './pages/profile'
 import Users from './pages/users'
 import Register from './pages/register';
+import Search from './pages/search';
 import reportWebVitals from './reportWebVitals';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -23,6 +24,7 @@ root.render(
       <Route path='/profile' element={<Profile />} />
       <Route path='/users' element={<Users />} />
       <Route path='/register' element={<Register />} />
+      <Route path='/search' element={<Search />} />
     </Routes>
   </Router>
 );

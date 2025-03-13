@@ -2,9 +2,10 @@ import React, { useEffect,  useState, useRef } from 'react';
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import '../assets/styles/profile.css';
-import SideBar from '../components/side_bar';
+import SideBar from '../components/sidebar';
 import showToastMessage from '../components/toast_message';
-
+import profile_svg from '../assets/images/profile-icon.svg';
+import pencil_square_svg from '../assets/images/pencil-square.svg';
 function Profile() {
     const navigate = useNavigate();
     const token = sessionStorage.getItem("access_token");
@@ -15,7 +16,8 @@ function Profile() {
     const [lastName, setLastName] = useState('');
     const [gender, setGender] = useState('');
     const [profileImg, setProfileImg] = useState('');
-    
+    const role = decodedToken.role;
+    const [userRole, setRole] = useState(role);
     const [changePassword, setChangePassword] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);

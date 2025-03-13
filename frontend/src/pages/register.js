@@ -4,7 +4,7 @@ import showToastMessage from '../components/toast_message';
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import upload_svg from '../assets/images/upload.svg'
-import SideBar from "../components/side_bar";
+import SideBar from "../components/sidebar";
 
 function Register() {
     const token = sessionStorage.getItem("access_token");

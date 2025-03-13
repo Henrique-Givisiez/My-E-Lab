@@ -60,10 +60,10 @@ class LoansHelper(BaseHelper):
             e.Data_Emprestimo,
             e.Data_Devolucao,
             e.Status_atual
-        FROM emprestimo e
-        INNER JOIN item i ON e.FK_id_item = i.Id
-        LEFT JOIN livro l ON i.Id = l.ISBN
-        LEFT JOIN material_didatico m ON i.Id = m.Numero_serie
+        FROM Emprestimo e
+        INNER JOIN Item i ON e.FK_id_item = i.Id
+        LEFT JOIN Livro l ON i.Id = l.ISBN
+        LEFT JOIN Material_Didatico m ON i.Id = m.Numero_serie
         WHERE e.FK_id_usuario = %s;"""
 
         try:

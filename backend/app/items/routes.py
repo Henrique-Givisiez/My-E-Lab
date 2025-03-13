@@ -17,7 +17,6 @@ def register_item():
         data = dict(data)
         for key, value in data.items():
             data[key] = value.strip()
-
         item_img = request.files.get('img')
     
         item_img_data = None
@@ -62,6 +61,10 @@ def read_all_items():
         return jsonify(msg="Usuário não tem permissão para realizar essa operação."), 403
     
     book_data = database.books.read_all_books()
+    if not book_data:
+        book_data = []
     materials_data = database.materials.read_all_materials()
+    if not materials_data:
+        materials_data = []
     items_data = book_data + materials_data
     return jsonify(data=items_data) if items_data else ({'msg': 'Não há items cadastrados.'}, 404)
