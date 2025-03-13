@@ -1,5 +1,5 @@
 import "../assets/styles/register.css";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import showToastMessage from '../components/toast_message';
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -92,6 +92,13 @@ function Register() {
         };
     };
 
+    const fileInputRef = useRef(null);
+    
+    const handleButtonClick = (e) => {
+        e.preventDefault();
+            fileInputRef.current.click();
+    };
+    
     const handleSelectChange = (e) => {
         const value = e.target.value;
         if (value === "book") {
@@ -192,8 +199,8 @@ function Register() {
                     </div>
                     <div className="register-form_group">
                         <label className="register-sub_title" htmlFor="book_cover">Capa do Livro</label>
-                        <input type="file" name="book_cover" className="signup-file_input" onChange={handleFileChange}/>
-                        <button className='register-btn_upload'><img src={upload_svg} alt="Upload"></img>Anexar imagem</button>
+                        <input type="file" name="book_cover" ref={fileInputRef} className="signup-file_input" onChange={handleFileChange}/>
+                        <button className='register-btn_upload' onClick={handleButtonClick}><img src={upload_svg} alt="Upload"></img>Anexar imagem</button>
                     </div>
                     <div className="register-btn-div">
                         <button className="register-btn" type="submit">CADASTRAR</button>
