@@ -51,14 +51,14 @@ function Search() {
                     navigate("/login", { state: {success: false, message: "Sessão expirada. Faça login novamente."} });
                 }
                 if (response.status === 404) {
-                    showToastMessage(response.json().msg, false);
+                    setFilteredData([]);
+                    setLoading(false);
                 }
                 throw new Error('Erro na requisição, status: ' + response.status);
             }
             return response.json();
         })
         .then(data => {
-            setItems(data);
             setLoading(false);
             setFilteredData(data.data);
         })
@@ -92,9 +92,9 @@ function Search() {
                 filteredData.map((item) => (
                     <div key={item.id} className="item-card">
                     <div className="item-image">
-                        {item.Imagem_perfil ? (
+                        {item.imagem ? (
                         <img
-                            src={`data:image/png;base64,${item.Imagem_perfil}`}
+                            src={`data:image/png;base64,${item.imagem}`}
                             alt={item.nome}
                         />
                         ) : (
