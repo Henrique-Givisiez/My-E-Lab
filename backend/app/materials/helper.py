@@ -1,5 +1,5 @@
 from database.base_helper import BaseHelper
-from datetime import datetime
+import base64
 class MaterialsHelper(BaseHelper):
     
     def create(self, serial_number: str, name: str, description: str,  
@@ -51,7 +51,7 @@ class MaterialsHelper(BaseHelper):
             for material in all_materials:
                 material[1]  = material[1].capitalize()
                 material[3]  = material[3].capitalize()
-                material[-1] = material[-1].decode('utf-8') if material[-1] else None
+                material[-1] = base64.enconde(material[-1]).decode('utf-8') if material[-1] else None
 
             all_materials.sort(key=lambda x: x[1])
             for ind in range(len(all_materials)):

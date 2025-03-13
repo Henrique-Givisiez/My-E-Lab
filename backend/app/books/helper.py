@@ -1,5 +1,5 @@
 from database.base_helper import BaseHelper
-from datetime import datetime
+import base64
 class BooksHelper(BaseHelper):
     
     def create(self, ISBN: str, title: str, description: str,  
@@ -52,7 +52,7 @@ class BooksHelper(BaseHelper):
             for book in all_books:
                 book[1]  = book[1].capitalize()
                 book[3]  = book[3].capitalize()
-                book[-1] = book[-1].decode('utf-8') if book[-1] else None
+                book[-1] = base64.b64encode(book[-1]).decode('utf-8') if book[-1] else None
 
             all_books.sort(key=lambda x: x[1])
             for ind in range(len(all_books)):
