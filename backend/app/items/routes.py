@@ -49,16 +49,8 @@ def register_item():
 @jwt_required()
 def read_all_items():
     user_id = get_jwt_identity()
-    try:
-        role = get_jwt()["role"]
-    except KeyError:
-        return jsonify(msg="Informações do token faltando."), 401 
-    
     if not user_id:
         return jsonify({"success": False, "msg":"Operação não autorizada."}), 401
-    
-    if role == "estudante":
-        return jsonify(msg="Usuário não tem permissão para realizar essa operação."), 403
     
     book_data = database.books.read_all_books()
     if not book_data:
@@ -68,3 +60,18 @@ def read_all_items():
         materials_data = []
     items_data = book_data + materials_data
     return jsonify(data=items_data) if items_data else ({'msg': 'Não há items cadastrados.'}, 404)
+
+@items_bp.route('/read/<type>/<id>', methods=['GET'])
+@cross_origin()
+@jwt_required()
+def read_item(type, id):
+    user_id = get_jwt_identity()
+    
+    if not user_id:
+        return jsonify({"success": False, "msg":"Operação não autorizada."}), 401
+    if type == 'Livro':
+        data = database.books.read(ISBN=id)
+    else:
+        data = database.materials.read(serial_number=id)
+
+    return jsonify(data=data) if data else ({'msg': 'Item não encontrado.'}, 404)
