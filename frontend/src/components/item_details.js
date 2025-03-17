@@ -4,6 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 import "../assets/styles/details.css";
 import placeholder from '../assets/images/placeholder.png';
 import SideBar from '../components/sidebar';
+import showToastMessage from '../components/toast_message';
 
 function ItemDetails() {
     const { type, id } = useParams();
@@ -55,6 +56,46 @@ function ItemDetails() {
         });
     }, [type, id, navigate]);
 
+    const createLoan = () => {
+        const token = sessionStorage.getItem("access_token");
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
+        try {
+            jwtDecode(token);
+        } catch (error) {
+            navigate("/login", { state: { message: "Sessão inválida. Faça login novamente." } });
+            return;
+        }
+        const data = new FormData();
+        data.append('item_id', id);
+        fetch(`http://127.0.0.1:5000/loans/create`, {
+            method: 'POST',
+            body: data,
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 401) {
+                    navigate("/login", { state: { message: "Sessão expirada. Faça login novamente." } });
+                }
+            } 
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            showToastMessage(data.msg, data.success);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+
+    }
+
     if (loading) return <p>Carregando detalhes...</p>;
     if (!itemDetails) return <p>Detalhes não disponíveis.</p>;
     var imagem = '';
@@ -101,6 +142,7 @@ function ItemDetails() {
                         )}
                     </div>
                 </div>
+                <button className='create-loan' onClick={createLoan}>Solicitar empréstimo</button>
             </div>
         </div>
     );

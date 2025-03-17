@@ -72,3 +72,15 @@
     }
   }
   
+  .create-loan{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    background-color: #2d4bf0;
+    cursor: pointer;
+  }
+
+  .create-loan:hover{
+    background-color: #1e2f84;
+  }

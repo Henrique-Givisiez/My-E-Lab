@@ -7,14 +7,17 @@ class LoansHelper(BaseHelper):
             today_date = date.today()
             devolution_date = today_date + timedelta(days=14)
             status = "emprestado"
-
+            if not self.item_is_available(item_id):
+                print('ok')
+                msg = "Item indisponível para empréstimo."
+                return False, msg
+            
             insert_loan_query = """INSERT INTO Emprestimo (FK_id_item, Data_Emprestimo, Data_Devolucao, Status_atual, FK_id_usuario)
                                    VALUES(%s, %s, %s, %s, %s) 
                                 """
             try:
                 self.cursor.execute(insert_loan_query, (item_id, today_date, devolution_date, status, user_id))
                 self.conn.commit()
-
                 loan_id = self.cursor.lastrowid
                 loan_created = self.read_loan(loan_id)
 
@@ -35,7 +38,21 @@ class LoansHelper(BaseHelper):
             msg = "Informações faltando."
             return False, msg
         
-    
+    def item_is_available(self, item_id: str) -> bool:
+        select_item_query = "SELECT Status_atual FROM Emprestimo WHERE FK_id_item = %s"
+        try:
+            self.cursor.execute(select_item_query, (item_id))
+            item_status = self.cursor.fetchone()
+            if not item_status:
+                return True
+            if item_status[0] == "emprestado":
+                return False
+            return True
+        except Exception as err:
+            print(f"ERROR: {err}")
+            return False
+        
+
     def read_loan(self, loan_id: int) -> list | None:
         select_loan_query = "SELECT * FROM Emprestimo WHERE Id_emprestimo = %s"
         try:

@@ -14,13 +14,12 @@ loans_bp = Blueprint('loans', __name__)
 def create_loan():
     # Busca identificador do usuário no token JWT
     user_id = get_jwt_identity()
-
     # Usuário não está logado
     if not user_id:
         return jsonify({"success": False, "msg":"Operação não autorizada."}), 401
     try:
         # Recebe dados no formato JSON e tenta cadastrar empréstimo no banco de dados
-        data = request.json
+        data = request.form
         success, msg = database.loans.create(data['item_id'], user_id)
 
     # Tratamento de erro para ausência de um dos campos
