@@ -50,15 +50,12 @@ function Search() {
                 if (response.status === 401) {
                     navigate("/login", { state: {success: false, message: "Sessão expirada. Faça login novamente."} });
                 }
-                if (response.status === 404) {
-                    setFilteredData([]);
-                    setLoading(false);
-                }
                 throw new Error('Erro na requisição, status: ' + response.status);
             }
             return response.json();
         })
         .then(data => {
+            setItems(data);
             setLoading(false);
             setFilteredData(data.data);
         })
@@ -68,7 +65,20 @@ function Search() {
         });
     }, []);
 
+    const handleSearch = (e) => {
+        const searchQuery = e.target.value.toLowerCase();
+        setQuery(searchQuery);
     
+        const results = items.data.filter(
+          (item) =>
+            item.nome.toLowerCase().includes(searchQuery) ||
+            item.categoria.toLowerCase().includes(searchQuery) ||
+            item.type.toLowerCase().includes(searchQuery) ||
+            item.localizacao.toLowerCase().includes(searchQuery)
+        );
+        setFilteredData(results);
+      };
+
     return (
     <div className="users">
         <SideBar />
@@ -80,7 +90,7 @@ function Search() {
                 type="text"
                 placeholder="Busque por livros ou materiais"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={handleSearch}
             />
             </div>
 
@@ -106,7 +116,7 @@ function Search() {
                         <p className="item-location">{item.localizacao}</p>
                         <p className="item-location">{item.type}</p>
                     </div>
-                    <button className="details-button">VER DETALHES</button>
+                    <button className="details-button"  onClick={() => navigate(`/detalhes/${item.type}/${item.id}`)}>VER DETALHES</button>
                     </div>
                 ))
                 ) : (

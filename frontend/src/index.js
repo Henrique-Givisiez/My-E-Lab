@@ -8,6 +8,7 @@ import Profile from './pages/profile'
 import Users from './pages/users'
 import Register from './pages/register';
 import Search from './pages/search';
+import ItemDetails from './components/item_details';
 import reportWebVitals from './reportWebVitals';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -25,6 +26,7 @@ root.render(
       <Route path='/users' element={<Users />} />
       <Route path='/register' element={<Register />} />
       <Route path='/search' element={<Search />} />
+      <Route path="/detalhes/:type/:id" element={<ItemDetails />} />
     </Routes>
   </Router>
 );
