@@ -34,7 +34,10 @@ class MaterialsHelper(BaseHelper):
         try:
             self.cursor.execute(select_material_query, (serial_number, ))
             material_data = list(self.cursor.fetchone())
-            material_data[-1] = material_data[-1].decode('utf-8')
+            material_data[1]  = material_data[1].capitalize()
+            material_data[3]  = material_data[3].capitalize()
+            material_data[4] = material_data[4].strftime('%d/%m/%Y')
+            material_data[-1] = base64.b64encode(material_data[-1]).decode('utf-8') if material_data[-1] else None
             return material_data
         
         except Exception as err:
@@ -51,7 +54,7 @@ class MaterialsHelper(BaseHelper):
             for material in all_materials:
                 material[1]  = material[1].capitalize()
                 material[3]  = material[3].capitalize()
-                material[-1] = base64.enconde(material[-1]).decode('utf-8') if material[-1] else None
+                material[-1] = base64.b64encode(material[-1]).decode('utf-8') if material[-1] else None
 
             all_materials.sort(key=lambda x: x[1])
             for ind in range(len(all_materials)):

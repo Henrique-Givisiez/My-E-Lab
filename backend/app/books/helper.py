@@ -35,7 +35,10 @@ class BooksHelper(BaseHelper):
         try:
             self.cursor.execute(select_book_query, (ISBN, ))
             book_data = list(self.cursor.fetchone())
-            book_data[-1] = book_data[-1].decode('utf-8')
+            book_data[1]  = book_data[1].capitalize()
+            book_data[3]  = book_data[3].capitalize()
+            book_data[-4] = book_data[-4].strftime('%d/%m/%Y')
+            book_data[-1] = base64.b64encode(book_data[-1]).decode('utf-8') if book_data[-1] else None
             return book_data
         
         except Exception as err:
