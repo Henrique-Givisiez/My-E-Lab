@@ -241,8 +241,8 @@ function Register() {
                     </div>
                     <div className="register-form_group">
                         <label className="register-sub_title" htmlFor="book_cover">Foto do Material</label>
-                        <input type="file" name="book_cover" className="signup-file_input" onChange={handleFileChange}/>
-                        <button className='register-btn_upload'><img src={upload_svg} alt="Upload"></img>Anexar imagem</button>
+                        <input type="file" name="book_cover" ref={fileInputRef} className="signup-file_input" onChange={handleFileChange}/>
+                        <button className='register-btn_upload' onClick={handleButtonClick}><img src={upload_svg} alt="Upload"></img>Anexar imagem</button>
                     </div>
                     <div className="register-btn-div">
                         <button className="register-btn" type="submit">CADASTRAR</button>
