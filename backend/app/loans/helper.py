@@ -39,7 +39,12 @@ class LoansHelper(BaseHelper):
             return False, msg
         
     def item_is_available(self, item_id: str) -> bool:
-        select_item_query = "SELECT Status_atual FROM Emprestimo WHERE FK_id_item = %s"
+        select_item_query = """ SELECT Status_atual 
+                                FROM Emprestimo 
+                                WHERE Fk_id_item = %s 
+                                ORDER BY Id_emprestimo DESC 
+                                LIMIT 1;
+                            """
         try:
             self.cursor.execute(select_item_query, (item_id))
             item_status = self.cursor.fetchone()
