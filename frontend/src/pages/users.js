@@ -30,7 +30,6 @@ function Users() {
     
     useEffect(() => {
         const token = sessionStorage.getItem("access_token");
-    
         if (!token) {
             navigate("/login");
         }
@@ -82,7 +81,7 @@ function Users() {
         <div className="users">
             <SideBar />
             {loading ? (
-            <p>Carregando usuários...</p>
+            <p style={{marginLeft: '20px'}}>Carregando usuários...</p>
         ) : (
             <div className="main-users">
                 <h1 style={{marginLeft:'15px'}}>Usuários</h1>

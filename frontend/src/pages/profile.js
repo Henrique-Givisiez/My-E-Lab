@@ -7,36 +7,33 @@ import showToastMessage from '../components/toast_message';
 import profile_svg from '../assets/images/profile-icon.svg';
 import pencil_square_svg from '../assets/images/pencil-square.svg';
 function Profile() {
-    const navigate = useNavigate();
-    const token = sessionStorage.getItem("access_token");
-    const decodedToken = jwtDecode(token);
-    const user_id = decodedToken.sub;
-    const [login, setLogin] = useState('');
-    const [user_name, setName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [gender, setGender] = useState('');
-    const [profileImg, setProfileImg] = useState('');
-    const role = decodedToken.role;
-    const [userRole, setRole] = useState(role);
-    const [changePassword, setChangePassword] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
-    const [formDisabled, setFormDisabled] = useState(true);
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
-    
-    const handleEditButton = (e) => {
-        
-        e.preventDefault();
-        if (!isEditing) {
-            setIsEditing(true);
-            setFormDisabled(false); 
-        } else {
-            
-            setIsEditing(false);
-            setFormDisabled(true);
-        }
-    };
+  const navigate = useNavigate();
+  const [user_id, setUserId] = useState(0);
+  const [login, setLogin] = useState('');
+  const [user_name, setName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [gender, setGender] = useState('');
+  const [profileImg, setProfileImg] = useState('');
+  const [changePassword, setChangePassword] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [formDisabled, setFormDisabled] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [role, setRole] = useState('');
+
+  const handleEditButton = (e) => {
+      
+      e.preventDefault();
+      if (!isEditing) {
+          setIsEditing(true);
+          setFormDisabled(false); 
+      } else {
+          
+          setIsEditing(false);
+          setFormDisabled(true);
+      }
+  };
 
     const handleChangePassword = (e) => {
         e.preventDefault();
@@ -116,6 +113,11 @@ function Profile() {
     };
     
     const handleConfirmPassword = (e) => {
+      const token = sessionStorage.getItem("access_token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
         e.preventDefault();
         return fetch('http://127.0.0.1:5000/auth/confirm_password', {
             method: 'POST',
@@ -147,6 +149,11 @@ function Profile() {
     };
 
     const handleSaveButton = async (e) => {
+      const token = sessionStorage.getItem("access_token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
         e.preventDefault();
         const data = new FormData();
         Object.keys(formData).forEach(key => {
@@ -179,6 +186,11 @@ function Profile() {
     };
       
     const handleDeleteButton = async (e) => {
+      const token = sessionStorage.getItem("access_token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
         e.preventDefault();
         try {
             const response = await fetch(`http://127.0.0.1:5000/auth/delete/${user_id}`, {
@@ -219,6 +231,11 @@ function Profile() {
     };
 
     const handleLogoutButton = async (e) => {
+      const token = sessionStorage.getItem("access_token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
       e.preventDefault();
       try {
         const response = await fetch(`http://127.0.0.1:5000/auth/logout`, {
@@ -237,6 +254,11 @@ function Profile() {
     }
   
     const handleFormChangePassword = async (e) => {
+      const token = sessionStorage.getItem("access_token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
         e.preventDefault();
         if (passwordsMatch) {
             try {
@@ -280,9 +302,13 @@ function Profile() {
         };
     }, []);
     useEffect(() => {
-        if (!token) {
-            navigate("/login");
-        }
+      const token = sessionStorage.getItem("access_token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+      const decodedToken = jwtDecode(token);
+      setUserId(decodedToken?.sub);
 
         if (decodedToken) {
             fetch(`http://127.0.0.1:5000/auth/details/${user_id}`, {

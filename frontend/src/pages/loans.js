@@ -7,15 +7,12 @@ import { jwtDecode } from "jwt-decode";
 import SideBar from '../components/sidebar';
 
 function Loans() {
-    const token = sessionStorage.getItem("access_token");
-    const decodedToken = jwtDecode(token);
     const location = useLocation();
     const message = location.state?.message;
     const success = location.state?.success;
     const [loans, setLoans] = useState([]);
     const navigate = useNavigate();
-    const user_name = decodedToken.name;
-
+    const [user_name, setUser_name] = useState('');
     useEffect(() => {
         if (message !== undefined) {
             showToastMessage(message, success);  
@@ -32,10 +29,12 @@ function Loans() {
     
     useEffect(() => {
         const token = sessionStorage.getItem("access_token");
-    
         if (!token) {
             navigate("/login");
+            return;
         }
+        const decodedToken = jwtDecode(token);
+        setUser_name(decodedToken?.name);
         
         fetch("http://127.0.0.1:5000/loans/read-by-user", {
             method: 'GET',

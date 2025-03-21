@@ -3,12 +3,9 @@ import React, { useEffect, useState } from 'react';
 import showToastMessage from '../components/toast_message';
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import SideBar from '../components/sidebar';
 import placeholder from '../assets/images/placeholder.png';
 function Search() {
-    const token = sessionStorage.getItem("access_token");
-    const decodedToken = jwtDecode(token);
     const location = useLocation();
     const message = location.state?.message;
     const [items, setItems] = useState({ data: [] });
