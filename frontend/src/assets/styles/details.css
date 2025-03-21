@@ -10,7 +10,7 @@
   flex-direction: column;
   align-self: center;
   align-items: center;
-  margin-left: 500px;
+  margin-left: 20%;
   height: fit-content;
   padding: 20px;
   flex: 1;
@@ -79,6 +79,10 @@
     margin-top: 20px;
     background-color: #2d4bf0;
     cursor: pointer;
+    border: none;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
   }
 
   .create-loan:hover{
