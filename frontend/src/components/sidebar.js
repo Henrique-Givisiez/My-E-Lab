@@ -3,7 +3,6 @@ import card_list_svg from '../assets/images/card-list.svg';
 import search_svg from '../assets/images/search-icon.svg';
 import register_svg from '../assets/images/register-icon.svg';
 import users_svg from '../assets/images/users-icon.svg';
-import dev_svg from '../assets/images/dev-icon.svg';
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -22,8 +21,7 @@ function SideBar () {
                 { name: "Empréstimos", roles: ["estudante", "professor", "admin"], img: card_list_svg, link_page: "loans" },
                 { name: "Consulta", roles: ["estudante", "professor", "admin"], img: search_svg, link_page: "search" },
                 { name: "Cadastro", roles: ["professor", "admin"], img: register_svg, link_page: "register" },
-                { name: "Usuários", roles: ["admin"], img: users_svg, link_page: "users" },
-                { name: "Criador", roles: ["estudante", "professor", "admin"], img: dev_svg, link_page: "dev" },
+                { name: "Usuários", roles: ["admin"], img: users_svg, link_page: "users" }
             ];
         
             return links.filter(link => link.roles.includes(userRole));
